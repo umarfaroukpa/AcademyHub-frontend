@@ -1,0 +1,16 @@
+redis:
+image: redis:7
+ports:
+- "6379:6379"
+
+
+ai-service:
+build: ./ai-service
+env_file: ./ai-service/.env
+ports:
+- "5000:5000"
+depends_on:
+- redis
+
+
+ai-worker:
