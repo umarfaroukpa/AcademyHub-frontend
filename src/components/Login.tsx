@@ -1,112 +1,65 @@
-// import { useState } from 'react';
-// import { useRouter } from 'next/router';
-// import api from '../../lib/api';
-
-
-// interface LoginResponse {
-//   token: string;
-//   user: {
-//     id: string;
-//     email: string;
-//     name: string;
-//     role: 'student' | 'lecturer' | 'admin';
-//   };
-// }
-
-// export default function Login() {
-//   const [email, setEmail] = useState('');
-//   const [password, setPassword] = useState('');
-//   const router = useRouter();
-
-//   const handleSubmit = async (e: React.FormEvent) => {
-//     e.preventDefault();
-//     try {
-//       const response = await api.post('/auth/login', { email, password });
-//       const data = response.data as LoginResponse;
-//       localStorage.setItem('token', data.token);
-//       localStorage.setItem('user', JSON.stringify(data.user));
-//       router.push('/dashboard');
-//     } catch (error) {
-//       alert('Login failed');
-//     }
-//   };
-
-//   return (
-//     <div className="min-h-screen flex items-center justify-center bg-gray-50">
-//       <form onSubmit={handleSubmit} className="bg-white p-8 rounded shadow-md w-96">
-//         <h2 className="text-2xl font-bold mb-6">Login</h2>
-//         <input
-//           type="email"
-//           placeholder="Email"
-//           value={email}
-//           onChange={(e) => setEmail(e.target.value)}
-//           className="w-full p-2 mb-4 border rounded"
-//           required
-//         />
-//         <input
-//           type="password"
-//           placeholder="Password"
-//           value={password}
-//           onChange={(e) => setPassword(e.target.value)}
-//           className="w-full p-2 mb-4 border rounded"
-//           required
-//         />
-//         <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded">
-//           Login
-//         </button>
-//       </form>
-//     </div>
-//   );
-// }
-
-// app/page.tsx - Login Page
 'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import api, { setAuthToken } from '../../lib/api';
+
+
+interface LoginResponse {
+        token: string;
+        user: any; 
+      }
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-
-  // Mock users for testing
-  const mockUsers = [
-    { id: 1, name: 'John Doe', email: 'student@test.com', password: 'student123', role: 'student' },
-    { id: 2, name: 'Dr. Sarah Johnson', email: 'lecturer@test.com', password: 'lecturer123', role: 'lecturer' },
-    { id: 3, name: 'Admin Mike', email: 'admin@test.com', password: 'admin123', role: 'admin' }
-  ];
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setIsLoading(true);
 
-    // Find user
-    const user = mockUsers.find(u => u.email === email && u.password === password);
+    try {
+      console.log('🔐 Attempting login with:', email);
+      
+      
 
-    if (!user) {
-      setError('Invalid email or password');
-      return;
+      const response = await api.post<LoginResponse>('/auth/login', { 
+        email, 
+        password 
+      });
+      
+      const { token, user } = response.data;
+      console.log('✅ Login successful, received token and user:', user);
+
+      // Store authentication data
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
+      setAuthToken(token);
+
+      console.log('🔑 Token stored, redirecting to dashboard...');
+      router.push('/dashboard');
+      
+    } catch (error: any) {
+      console.error('🔴 Login failed:', error);
+      const errorMessage = error.response?.data?.error || 'Login failed. Please try again.';
+      setError(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
-
-    // Store user data (excluding password)
-    const { password: _, ...userWithoutPassword } = user;
-    localStorage.setItem('user', JSON.stringify(userWithoutPassword));
-    localStorage.setItem('token', 'mock-token-' + Date.now());
-
-    // Redirect to dashboard
-    router.push('/dashboard');
   };
 
-  const quickLogin = (role: string) => {
-    const user = mockUsers.find(u => u.role === role);
-    if (user) {
-      const { password: _, ...userWithoutPassword } = user;
-      localStorage.setItem('user', JSON.stringify(userWithoutPassword));
-      localStorage.setItem('token', 'mock-token-' + Date.now());
-      router.push('/dashboard');
-    }
+  const quickLogin = async (testEmail: string, testPassword: string) => {
+    setEmail(testEmail);
+    setPassword(testPassword);
+    
+    // Simulate form submission
+    const mockEvent = { preventDefault: () => {} } as React.FormEvent;
+    await handleLogin(mockEvent);
   };
 
   return (
@@ -150,9 +103,10 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            className="w-full p-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors"
+            disabled={isLoading}
+            className="w-full p-3 bg-blue-500 hover:bg-blue-600 disabled:bg-blue-400 text-white rounded-lg font-medium transition-colors"
           >
-            Login
+            {isLoading ? 'Logging in...' : 'Login'}
           </button>
         </form>
 
@@ -160,35 +114,40 @@ export default function LoginPage() {
           <p className="text-white text-sm text-center mb-3">Quick Login (Testing)</p>
           <div className="space-y-2">
             <button
-              onClick={() => quickLogin('student')}
-              className="w-full p-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-white text-sm transition-colors"
+              onClick={() => quickLogin('student@test.com', 'student123')}
+              disabled={isLoading}
+              className="w-full p-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-white text-sm transition-colors disabled:opacity-50"
             >
               Login as Student
             </button>
             <button
-              onClick={() => quickLogin('lecturer')}
-              className="w-full p-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-white text-sm transition-colors"
+              onClick={() => quickLogin('lecturer@test.com', 'lecturer123')}
+              disabled={isLoading}
+              className="w-full p-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-white text-sm transition-colors disabled:opacity-50"
             >
               Login as Lecturer
             </button>
             <button
-              onClick={() => quickLogin('admin')}
-              className="w-full p-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-white text-sm transition-colors"
+              onClick={() => quickLogin('admin@test.com', 'admin123')}
+              disabled={isLoading}
+              className="w-full p-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-white text-sm transition-colors disabled:opacity-50"
             >
               Login as Admin
             </button>
           </div>
         </div>
+        <div className="text-center mt-4">
+         <p className="text-white/80 text-sm">
+         Don't have an account?{' '}
+         <Link href="/signup" className="text-blue-300 hover:text-blue-200 font-medium">
+          Sign up here
+        </Link>
+         </p>
+         </div>
 
         <div className="mt-6 text-center">
           <p className="text-white/60 text-xs">
-            Test credentials:
-            <br />
-            Student: student@test.com / student123
-            <br />
-            Lecturer: lecturer@test.com / lecturer123
-            <br />
-            Admin: admin@test.com / admin123
+            Using real backend authentication
           </p>
         </div>
       </div>

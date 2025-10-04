@@ -3,10 +3,18 @@ import Router, { useRouter } from 'next/router';
 import API, { setAuthToken } from '../../lib/api';
 
 
+interface Course {
+id: number;
+code: string;
+title: string;
+description: string;
+lifecycle: 'draft' | 'inReview' | 'published' | 'archived';
+}
+
 export default function CourseEditor() {
 const router = useRouter();
 const { id } = router.query;
-const [course, setCourse] = useState<any>(null);
+const [course, setCourse] = useState<Course | null>(null);
 const [title, setTitle] = useState('');
 const [code, setCode] = useState('');
 const [description, setDescription] = useState('');
@@ -20,10 +28,10 @@ if (id && id !== 'new') fetchCourse();
 
 async function fetchCourse() {
 const res = await API.get(`/api/courses/${id}`);
-setCourse(res.data);
-setTitle(res.data.title);
-setCode(res.data.code);
-setDescription(res.data.description);
+setCourse(res.data as Course);
+setTitle((res.data as Course).title);
+setCode((res.data as Course).code);
+setDescription((res.data as Course).description);
 }
 
 

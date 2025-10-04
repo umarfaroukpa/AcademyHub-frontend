@@ -2,9 +2,16 @@ import { useState, useEffect } from 'react';
 import { Course, Enrollment } from '../../types/types';
 import api from '../../lib/api';
 
+
+interface EnrollmentResponse {
+  id: number;
+  course_id: number;
+  status: 'pending' | 'approved' | 'rejected';
+}
+
 export default function StudentDashboard() {
   const [courses, setCourses] = useState<Course[]>([]);
-  const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
+  const [enrollments, setEnrollments] = useState<EnrollmentResponse[]>([]);
   const [interests, setInterests] = useState('');
 
   useEffect(() => {
@@ -14,12 +21,12 @@ export default function StudentDashboard() {
 
   const fetchCourses = async () => {
     const response = await api.get('/courses');
-    setCourses(response.data);
+    setCourses(response.data as Course[]);
   };
 
   const fetchEnrollments = async () => {
     const response = await api.get('/enrollments');
-    setEnrollments(response.data);
+    setEnrollments(response.data as EnrollmentResponse[]);
   };
 
   const enrollCourse = async (courseId: number) => {

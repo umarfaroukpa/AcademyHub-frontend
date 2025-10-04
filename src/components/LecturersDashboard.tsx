@@ -94,7 +94,7 @@ export default function LecturerDashboard() {
                   className="mb-2"
                 />
                 {course.syllabus_url && (
-                  <a href={`http://localhost:5000/uploads/${course.syllabus_url}`} className="text-blue-500">
+                  <a href={`http://localhost:4000/uploads/${course.syllabus_url}`} className="text-blue-500">
                     View Syllabus
                   </a>
                 )}
