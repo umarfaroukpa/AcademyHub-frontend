@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import api, { setAuthToken } from '../../lib/api';
+import api, { setAuthToken } from '../../../lib/api';
 
 
 interface LoginResponse {
@@ -144,12 +144,6 @@ export default function LoginPage() {
         </Link>
          </p>
          </div>
-
-        <div className="mt-6 text-center">
-          <p className="text-white/60 text-xs">
-            Using real backend authentication
-          </p>
-        </div>
       </div>
     </div>
   );

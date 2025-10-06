@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import api, { setAuthToken } from '../../lib/api';
+import api, { setAuthToken } from '../../../lib/api';
 
 interface SignupResponse {
   token: string;
