@@ -58,13 +58,6 @@ export default function DashboardPage() {
     return () => clearTimeout(timer);
   }, [mounted, router]);
 
-  const logout = () => {
-    console.log('Logging out...');
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-    router.replace('/');
-  };
-
   if (!mounted || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -88,26 +81,8 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <nav className="bg-gray-800 text-white p-4 shadow-lg">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <h1 className="text-xl font-bold">Course Management System</h1>
-          <div className="flex items-center gap-4">
-            <span className="text-sm">
-              Welcome, <span className="font-semibold">{user.name}</span>
-              <span className="ml-2 px-2 py-1 bg-blue-600 rounded text-xs capitalize">
-                {user.role}
-              </span>
-            </span>
-            <button
-              onClick={logout}
-              className="bg-red-500 px-4 py-2 rounded hover:bg-red-600 transition-colors text-sm font-medium"
-            >
-              Logout
-            </button>
-          </div>
-        </div>
-      </nav>
-
+      {/* REMOVED THE DUPLICATE NAV - Header component in layout.tsx handles this */}
+      
       <div className="max-w-7xl mx-auto p-6">
         {user.role === 'student' && <StudentDashboard />}
         {user.role === 'lecturer' && <LecturerDashboard />}
@@ -117,7 +92,11 @@ export default function DashboardPage() {
           <div className="bg-white rounded-lg shadow p-8 text-center">
             <p className="text-red-600 mb-4">Invalid user role: {user.role}</p>
             <button
-              onClick={logout}
+              onClick={() => {
+                localStorage.removeItem('user');
+                localStorage.removeItem('token');
+                router.replace('/');
+              }}
               className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
             >
               Back to Login
