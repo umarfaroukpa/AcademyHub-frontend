@@ -81,8 +81,6 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* REMOVED THE DUPLICATE NAV - Header component in layout.tsx handles this */}
-      
       <div className="max-w-7xl mx-auto p-6">
         {user.role === 'student' && <StudentDashboard />}
         {user.role === 'lecturer' && <LecturerDashboard />}

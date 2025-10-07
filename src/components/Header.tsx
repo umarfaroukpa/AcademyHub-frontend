@@ -2,38 +2,95 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { GraduationCap, LogOut, Menu, X, User, Settings, Bell } from 'lucide-react';
+import { GraduationCap, LogOut, Menu, X, User, Settings, Bell, ChevronRight } from 'lucide-react';
 import { User as UserType } from '../../types/types';
+
+interface BreadcrumbItem {
+  label: string;
+  path: string;
+}
 
 export default function DynamicHeader() {
   const [user, setUser] = useState<UserType | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [breadcrumbs, setBreadcrumbs] = useState<BreadcrumbItem[]>([]);
   const router = useRouter();
   const pathname = usePathname();
 
+  // Load user data and listen for changes
   useEffect(() => {
-    // Get user data from localStorage
-    const userData = localStorage.getItem('user');
-    const token = localStorage.getItem('token');
-    
-    if (userData && token) {
-      try {
-        setUser(JSON.parse(userData));
-      } catch (error) {
-        console.error('Error parsing user data:', error);
-        handleCleanup();
+    const loadUser = () => {
+      const userData = localStorage.getItem('user');
+      const token = localStorage.getItem('token');
+      
+      if (userData && token) {
+        try {
+          setUser(JSON.parse(userData));
+        } catch (error) {
+          console.error('Error parsing user data:', error);
+          handleCleanup();
+        }
+      } else {
+        setUser(null);
       }
-    }
-    
-    setIsLoading(false);
+      
+      setIsLoading(false);
+    };
+
+    // Initial load
+    loadUser();
+
+    // Listen for storage changes (when user logs in/out in another tab or component)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'user' || e.key === 'token') {
+        loadUser();
+      }
+    };
+
+    // Custom event for same-tab updates
+    const handleUserChange = () => {
+      loadUser();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('userChanged', handleUserChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('userChanged', handleUserChange);
+    };
   }, []);
+
+  // Generate breadcrumbs based on current route
+  useEffect(() => {
+    const generateBreadcrumbs = (): BreadcrumbItem[] => {
+      const pathSegments = pathname.split('/').filter(Boolean);
+      const breadcrumbItems: BreadcrumbItem[] = [{ label: 'Home', path: '/' }];
+
+      let currentPath = '';
+      pathSegments.forEach((segment) => {
+        currentPath += `/${segment}`;
+        const label = segment
+          .split('-')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
+        breadcrumbItems.push({ label, path: currentPath });
+      });
+
+      return breadcrumbItems;
+    };
+
+    setBreadcrumbs(generateBreadcrumbs());
+  }, [pathname]);
 
   const handleCleanup = () => {
     localStorage.removeItem('user');
     localStorage.removeItem('token');
     setUser(null);
+    // Dispatch custom event to notify other components
+    window.dispatchEvent(new Event('userChanged'));
   };
 
   const handleLogout = () => {
@@ -123,7 +180,7 @@ export default function DynamicHeader() {
                   <div className="max-h-96 overflow-y-auto">
                     <div className="px-4 py-3 hover:bg-gray-50 cursor-pointer">
                       <p className="text-sm text-gray-700">
-                        {user ? 'Welcome to AcademiHub!' : 'Please login to see notifications'}
+                        {user ? `Welcome back, ${user.name}!` : 'Please login to see notifications'}
                       </p>
                       <p className="text-xs text-gray-500 mt-1">Just now</p>
                     </div>
@@ -192,6 +249,29 @@ export default function DynamicHeader() {
           </button>
         </div>
 
+        {/* Breadcrumbs - Show only when not on home/landing page */}
+        {pathname !== '/' && breadcrumbs.length > 1 && (
+          <div className="px-4 sm:px-6 lg:px-8 py-3 border-t border-gray-100">
+            <nav className="flex items-center space-x-2 text-sm">
+              {breadcrumbs.map((crumb, index) => (
+                <div key={crumb.path} className="flex items-center">
+                  {index > 0 && <ChevronRight className="w-4 h-4 text-gray-400 mx-2" />}
+                  {index === breadcrumbs.length - 1 ? (
+                    <span className="text-gray-900 font-medium">{crumb.label}</span>
+                  ) : (
+                    <button
+                      onClick={() => router.push(crumb.path)}
+                      className="text-gray-600 hover:text-blue-600 transition-colors"
+                    >
+                      {crumb.label}
+                    </button>
+                  )}
+                </div>
+              ))}
+            </nav>
+          </div>
+        )}
+
         {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="md:hidden border-t border-gray-200 bg-white">
@@ -212,7 +292,10 @@ export default function DynamicHeader() {
 
               {/* Mobile Actions */}
               <div className="space-y-2">
-                <button className="w-full flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                <button 
+                  onClick={() => setShowNotifications(!showNotifications)}
+                  className="w-full flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                >
                   <Bell className="w-5 h-5" />
                   <span>Notifications</span>
                   <span className="ml-auto w-2 h-2 bg-red-500 rounded-full"></span>

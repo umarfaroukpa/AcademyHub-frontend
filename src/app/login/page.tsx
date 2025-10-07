@@ -5,11 +5,10 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import api, { setAuthToken } from '../../../lib/api';
 
-
 interface LoginResponse {
-        token: string;
-        user: any; 
-      }
+  token: string;
+  user: any; 
+}
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -25,8 +24,6 @@ export default function LoginPage() {
 
     try {
       console.log('🔐 Attempting login with:', email);
-      
-      
 
       const response = await api.post<LoginResponse>('/auth/login', { 
         email, 
@@ -41,8 +38,15 @@ export default function LoginPage() {
       localStorage.setItem('user', JSON.stringify(user));
       setAuthToken(token);
 
+      // 🔥 IMPORTANT: Dispatch event to update header immediately
+      window.dispatchEvent(new Event('userChanged'));
+
       console.log('🔑 Token stored, redirecting to dashboard...');
-      router.push('/dashboard');
+      
+      // Small delay to ensure state updates before navigation
+      setTimeout(() => {
+        router.push('/dashboard');
+      }, 100);
       
     } catch (error: any) {
       console.error('🔴 Login failed:', error);
@@ -57,9 +61,13 @@ export default function LoginPage() {
     setEmail(testEmail);
     setPassword(testPassword);
     
-    // Simulate form submission
-    const mockEvent = { preventDefault: () => {} } as React.FormEvent;
-    await handleLogin(mockEvent);
+    // Wait for state to update before submitting
+    setTimeout(() => {
+      const form = document.querySelector('form');
+      if (form) {
+        form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+      }
+    }, 0);
   };
 
   return (
@@ -137,13 +145,13 @@ export default function LoginPage() {
           </div>
         </div>
         <div className="text-center mt-4">
-         <p className="text-white/80 text-sm">
-         Don't have an account?{' '}
-         <Link href="/signup" className="text-blue-300 hover:text-blue-200 font-medium">
-          Sign up here
-        </Link>
-         </p>
-         </div>
+          <p className="text-white/80 text-sm">
+            Don't have an account?{' '}
+            <Link href="/signup" className="text-blue-300 hover:text-blue-200 font-medium">
+              Sign up here
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );
