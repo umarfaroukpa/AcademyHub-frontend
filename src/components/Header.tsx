@@ -142,7 +142,7 @@ export default function DynamicHeader() {
     >
       {/* Background Pattern Overlay */}
       <div 
-        className="absolute inset-0 opacity-5"
+        className="absolute inset-0 opacity-25"
         style={{
           backgroundImage: 'url(/52911715-new.jpg)',
           backgroundSize: 'cover',
