@@ -53,7 +53,6 @@ export default function DashboardPage() {
       }
     };
 
-    // Small delay to ensure localStorage is available
     const timer = setTimeout(loadUser, 50);
     return () => clearTimeout(timer);
   }, [mounted, router]);

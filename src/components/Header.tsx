@@ -230,7 +230,7 @@ export default function DynamicHeader() {
             {/* Settings */}
             <button 
               className="p-2 text-white hover:bg-white/20 backdrop-blur-lg rounded-lg transition-colors border border-white/30"
-              onClick={() => user ? router.push('/settings') : router.push('/login')}
+              onClick={() => user ? router.push('/profile') : router.push('/login')}
             >
               <Settings className="w-5 h-5" />
             </button>
@@ -333,7 +333,7 @@ export default function DynamicHeader() {
 
                 <button 
                   className="w-full flex items-center space-x-3 px-4 py-3 text-white hover:bg-white/20 backdrop-blur-lg rounded-lg transition-colors border border-white/20"
-                  onClick={() => user ? router.push('/settings') : router.push('/login')}
+                  onClick={() => user ? router.push('/profile') : router.push('/login')}
                 >
                   <Settings className="w-5 h-5" />
                   <span>Settings</span>

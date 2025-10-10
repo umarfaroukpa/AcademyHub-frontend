@@ -125,32 +125,14 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-white">
       {/* Hero Section with Carousel */}
-      <section 
-        className="relative overflow-hidden"
-        style={{
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
-        }}
-      >
+      <section className="relative overflow-hidden bg-gradient-to-br from-purple-600 via-purple-800 to-pink-600">
         {/* Background Pattern Overlay */}
-        <div 
-          className="absolute inset-0 opacity-5"
-          style={{
-            backgroundImage: 'url(/26265399.jpg)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-          }}
-        />
+        <div className="absolute inset-0 bg-[url('/26265399.jpg')] bg-cover bg-center opacity-5" />
         
         {/* Additional Gradient Overlay */}
-        <div 
-          className="absolute inset-0"
-          style={{
-            background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.85) 0%, rgba(118, 75, 162, 0.90) 50%, rgba(240, 147, 251, 0.85) 100%)',
-          }}
-        />
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-600/85 via-purple-800/90 to-pink-600/85" />
 
         {/* Content */}
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8">
@@ -173,12 +155,9 @@ export default function LandingPage() {
                       filter: 'brightness(0.4)'
                     }}
                   />
-                  <div 
-                   className="absolute inset-0"
-                    style={{
-                      background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.85) 0%, rgba(118, 75, 162, 0.90) 50%, rgba(240, 147, 251, 0.85) 100%)',
-                   }}
-                  />
+                  
+                  {/* Slide Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-600/85 via-purple-800/90 to-pink-600/85" />
                   
                   {/* Slide Content */}
                   <div className="relative h-full flex items-center">
@@ -276,7 +255,7 @@ export default function LandingPage() {
       </section>
 
       {/* Features Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 bg-white">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
             Featured Courses
@@ -392,7 +371,7 @@ export default function LandingPage() {
       </section>
 
       {/* Upcoming Events Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 bg-white">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-3xl font-bold text-gray-900">Upcoming Events</h2>
           <div className="flex gap-3">
@@ -422,8 +401,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-       {/* Past Successful Events Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative">
+      {/* Past Successful Events Section */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 bg-white relative">
         {/* Background decorative blobs */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-yellow-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20" />
@@ -515,7 +494,7 @@ export default function LandingPage() {
       </section>
 
       {/* Reviews About Us Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 bg-white relative">
         {/* Background decorative blobs */}
         <div className="absolute top-1/2 left-0 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20" />
         <div className="absolute top-1/4 right-0 w-96 h-96 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20" />
@@ -639,7 +618,7 @@ export default function LandingPage() {
       </section>
       
       {/* CTA Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 bg-white">
         <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl p-12 md:p-16 text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
             Ready to Get Started?
@@ -655,23 +634,6 @@ export default function LandingPage() {
           </Link>
         </div>
       </section>
-
-      <style jsx>{`
-        @keyframes blob {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          33% { transform: translate(30px, -50px) scale(1.1); }
-          66% { transform: translate(-20px, 20px) scale(0.9); }
-        }
-        .animate-blob {
-          animation: blob 7s infinite;
-        }
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-        .animation-delay-4000 {
-          animation-delay: 4s;
-        }
-      `}</style>
     </div>
   );
 }

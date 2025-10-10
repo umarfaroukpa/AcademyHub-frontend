@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import api, { setAuthToken } from '../../../lib/api';
-import { GraduationCap } from 'lucide-react';
+import { GraduationCap, Lock, Crown } from 'lucide-react';
 
 interface SignupResponse {
   token: string;
@@ -21,13 +21,21 @@ export default function SignupPage() {
     email: '',
     password: '',
     confirmPassword: '',
-    role: 'student' as 'student' | 'lecturer'
+    role: 'student' as 'student' | 'lecturer' | 'admin'
   });
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [developerMode, setDeveloperMode] = useState(false);
+  const [secretCode, setSecretCode] = useState('');
   const router = useRouter();
+
+  // Developer access configuration
+  const DEVELOPER_CONFIG = {
+    secretCode: 'ADMIN_ACCESS_2024', // Must match backend
+    allowedEmails: ['yasmarfaq@yahoo.com', 'yasmarfaq51@gmail.com',]
+  };
 
   const validateForm = (): boolean => {
     const newErrors: ValidationErrors = {};
@@ -57,6 +65,11 @@ export default function SignupPage() {
       newErrors.confirmPassword = 'Passwords do not match';
     }
 
+    // Admin role validation
+    if (formData.role === 'admin' && !developerMode) {
+      newErrors.role = 'Admin registration requires developer access';
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -76,6 +89,18 @@ export default function SignupPage() {
     }
   };
 
+  const enableDeveloperMode = () => {
+    if (secretCode === DEVELOPER_CONFIG.secretCode) {
+      setDeveloperMode(true);
+      setErrors(prev => ({ ...prev, role: '' }));
+    } else {
+      setErrors(prev => ({ 
+        ...prev, 
+        general: 'Invalid developer access code' 
+      }));
+    }
+  };
+
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -83,15 +108,39 @@ export default function SignupPage() {
       return;
     }
 
+    // Additional validation for admin role
+    if (formData.role === 'admin') {
+      const isDeveloperEmail = DEVELOPER_CONFIG.allowedEmails.includes(formData.email.toLowerCase());
+      if (!isDeveloperEmail && !developerMode) {
+        setErrors({ 
+          general: 'Admin registration is restricted to authorized developer emails only' 
+        });
+        return;
+      }
+    }
+
     setIsLoading(true);
 
     try {
-      const response = await api.post<SignupResponse>('/auth/signup', {
+      const payload: any = {
         name: formData.name.trim(),
         email: formData.email.toLowerCase(),
         password: formData.password,
         role: formData.role
+      };
+
+      // Add developer code if trying to register as admin with developer mode
+      if (formData.role === 'admin' && developerMode) {
+        payload.developerCode = DEVELOPER_CONFIG.secretCode;
+      }
+
+      console.log('📤 Sending signup request:', { 
+        email: payload.email, 
+        role: payload.role,
+        hasDeveloperCode: !!payload.developerCode 
       });
+
+      const response = await api.post<SignupResponse>('/auth/signup', payload);
       
       const { token, user } = response.data;
 
@@ -101,7 +150,7 @@ export default function SignupPage() {
 
       window.dispatchEvent(new Event('userChanged'));
 
-      console.log('🔑 Token stored, redirecting to dashboard...');
+      console.log('✅ Signup successful, redirecting to dashboard...');
 
       setTimeout(() => {
         router.push('/dashboard');
@@ -110,7 +159,12 @@ export default function SignupPage() {
     } catch (error: any) {
       console.error('🔴 Signup failed:', error);
       
-      if (error.response?.data?.errors) {
+      // Handle different error responses
+      if (error.response?.data?.error) {
+        setErrors({ 
+          general: error.response.data.error 
+        });
+      } else if (error.response?.data?.errors) {
         const serverErrors: ValidationErrors = {};
         error.response.data.errors.forEach((err: any) => {
           serverErrors[err.path] = err.msg;
@@ -118,7 +172,7 @@ export default function SignupPage() {
         setErrors(serverErrors);
       } else {
         setErrors({ 
-          general: error.response?.data?.error || 'Signup failed. Please try again.' 
+          general: 'Signup failed. Please try again.' 
         });
       }
     } finally {
@@ -189,6 +243,17 @@ export default function SignupPage() {
               <span>Instant Access</span>
             </div>
           </div>
+
+          {/* Developer Access Notice */}
+          <div className="mt-4 p-4 bg-white/10 backdrop-blur-lg rounded-xl border border-white/20">
+            <div className="flex items-center space-x-2 mb-2">
+              <Crown className="w-5 h-5 text-yellow-300" />
+              <span className="font-semibold">Admin Access</span>
+            </div>
+            <p className="text-sm text-purple-100">
+              Administrator registration is restricted. Use developer access code or authorized email.
+            </p>
+          </div>
         </div>
 
         {/* Right Side - Signup Form */}
@@ -201,6 +266,46 @@ export default function SignupPage() {
               <h2 className="text-2xl font-bold text-gray-800">Get Started!</h2>
               <p className="text-gray-600">Create your account</p>
             </div>
+
+            {/* Developer Access Section */}
+            {!developerMode && (
+              <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-xl">
+                <div className="flex items-center space-x-2 mb-2">
+                  <Lock className="w-4 h-4 text-yellow-600" />
+                  <span className="text-sm font-semibold text-yellow-800">Developer Access</span>
+                </div>
+                <p className="text-xs text-yellow-700 mb-3">
+                  Admin registration requires developer authorization
+                </p>
+                <div className="flex space-x-2">
+                  <input
+                    type="password"
+                    value={secretCode}
+                    onChange={(e) => setSecretCode(e.target.value)}
+                    placeholder="Enter access code"
+                    className="flex-1 px-3 py-2 text-sm border border-yellow-300 rounded-lg focus:outline-none focus:border-yellow-500"
+                  />
+                  <button
+                    onClick={enableDeveloperMode}
+                    className="px-3 py-2 bg-yellow-600 text-white text-sm rounded-lg hover:bg-yellow-700 transition-colors"
+                  >
+                    Unlock
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {developerMode && (
+              <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-xl">
+                <div className="flex items-center space-x-2">
+                  <Crown className="w-4 h-4 text-green-600" />
+                  <span className="text-sm font-semibold text-green-800">Developer Mode Active</span>
+                </div>
+                <p className="text-xs text-green-700 mt-1">
+                  You can now register as administrator
+                </p>
+              </div>
+            )}
 
             <form onSubmit={handleSignup} className="space-y-4">
               <div>
@@ -247,12 +352,32 @@ export default function SignupPage() {
                   name="role"
                   value={formData.role}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:outline-none transition-colors bg-gray-50 text-gray-800"
+                  className={`w-full px-4 py-3 rounded-xl border-2 ${
+                    errors.role ? 'border-red-400' : 'border-gray-200'
+                  } focus:border-purple-500 focus:outline-none transition-colors bg-gray-50 text-gray-800 ${
+                    formData.role === 'admin' && !developerMode ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
                   required
+                  disabled={formData.role === 'admin' && !developerMode}
                 >
                   <option value="student">Student</option>
                   <option value="lecturer">Lecturer</option>
+                  <option 
+                    value="admin" 
+                    disabled={!developerMode}
+                    className={!developerMode ? 'text-gray-400 bg-gray-100' : ''}
+                  >
+                    Administrator {!developerMode && '(Restricted)'}
+                  </option>
                 </select>
+                {errors.role && <p className="text-red-500 text-xs mt-1">{errors.role}</p>}
+                
+                {/* Admin role explanation */}
+                {formData.role === 'admin' && developerMode && (
+                  <p className="text-xs text-green-600 mt-1">
+                    ⚠️ Administrator accounts have full system access
+                  </p>
+                )}
               </div>
 
               <div>
