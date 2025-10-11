@@ -19,7 +19,6 @@ export default function DynamicHeader() {
   const router = useRouter();
   const pathname = usePathname();
 
-  // Load user data and listen for changes
   useEffect(() => {
     const loadUser = () => {
       const userData = localStorage.getItem('user');
@@ -60,7 +59,6 @@ export default function DynamicHeader() {
     };
   }, []);
 
-  // Generate breadcrumbs based on current route
   useEffect(() => {
     const generateBreadcrumbs = (): BreadcrumbItem[] => {
       const pathSegments = pathname.split('/').filter(Boolean);
@@ -140,9 +138,9 @@ export default function DynamicHeader() {
         background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
       }}
     >
-      {/* Background Pattern Overlay */}
+      {/* Background Pattern Overlay - reduced opacity */}
       <div 
-        className="absolute inset-0 opacity-25"
+        className="absolute inset-0 opacity-15"
         style={{
           backgroundImage: 'url(/52911715-new.jpg)',
           backgroundSize: 'cover',
@@ -151,17 +149,20 @@ export default function DynamicHeader() {
         }}
       />
       
-      {/* Additional Gradient Overlay */}
+      {/* Gradient Overlay - increased opacity for better containment */}
       <div 
         className="absolute inset-0"
         style={{
-          background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.85) 0%, rgba(118, 75, 162, 0.90) 50%, rgba(240, 147, 251, 0.85) 100%)',
+          background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.97) 50%, rgba(240, 147, 251, 0.95) 100%)',
         }}
       />
 
+      {/* Bottom border to create clear separation */}
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-white/30"></div>
+
       {/* Decorative Blobs */}
-      <div className="absolute top-0 left-0 w-64 h-64 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" />
-      <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000" />
+      <div className="absolute top-0 left-0 w-64 h-64 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-blob" />
+      <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-300 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-blob animation-delay-2000" />
 
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="flex justify-between items-center h-16 px-4 sm:px-6 lg:px-8">
@@ -193,9 +194,8 @@ export default function DynamicHeader() {
                 <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
               </button>
 
-              {/* Notifications Dropdown */}
               {showNotifications && (
-                <div className="absolute right-0 mt-2 w-80 bg-white/95 backdrop-blur-xl rounded-xl shadow-2xl border border-white/50 py-2">
+                <div className="absolute right-0 mt-2 w-80 bg-white/95 backdrop-blur-xl rounded-xl shadow-2xl border border-gray-200 py-2">
                   <div className="px-4 py-2 border-b border-gray-100">
                     <h3 className="font-semibold text-gray-900">Notifications</h3>
                   </div>

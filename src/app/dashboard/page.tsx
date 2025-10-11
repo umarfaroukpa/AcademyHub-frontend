@@ -79,28 +79,56 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto p-6">
-        {user.role === 'student' && <StudentDashboard />}
-        {user.role === 'lecturer' && <LecturerDashboard />}
-        {user.role === 'admin' && <AdminDashboard />}
+    <>
+      {/* Solid background overlay - this blocks any gradient bleed */}
+      <div 
+        className="fixed top-0 left-0 right-0 bottom-0 bg-gray-50 -z-50"
+        style={{ backgroundColor: '#f9fafb' }}
+      />
+      
+      {/* Main content with solid background */}
+      <div 
+        className="min-h-screen relative"
+        style={{ 
+          backgroundColor: '#f9fafb',
+          position: 'relative',
+          zIndex: 1
+        }}
+      >
+        {/* Additional solid layer */}
+        <div 
+          className="absolute inset-0 bg-gray-50"
+          style={{ 
+            backgroundColor: '#f9fafb',
+            zIndex: -1 
+          }}
+        />
+        
+        {/* Content */}
+        <div className="relative z-10 pt-4">
+          <div className="max-w-7xl mx-auto p-6">
+            {user.role === 'student' && <StudentDashboard />}
+            {user.role === 'lecturer' && <LecturerDashboard />}
+            {user.role === 'admin' && <AdminDashboard />}
 
-        {!['student', 'lecturer', 'admin'].includes(user.role) && (
-          <div className="bg-white rounded-lg shadow p-8 text-center">
-            <p className="text-red-600 mb-4">Invalid user role: {user.role}</p>
-            <button
-              onClick={() => {
-                localStorage.removeItem('user');
-                localStorage.removeItem('token');
-                router.replace('/');
-              }}
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              Back to Login
-            </button>
+            {!['student', 'lecturer', 'admin'].includes(user.role) && (
+              <div className="bg-white rounded-lg shadow p-8 text-center">
+                <p className="text-red-600 mb-4">Invalid user role: {user.role}</p>
+                <button
+                  onClick={() => {
+                    localStorage.removeItem('user');
+                    localStorage.removeItem('token');
+                    router.replace('/');
+                  }}
+                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                >
+                  Back to Login
+                </button>
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
