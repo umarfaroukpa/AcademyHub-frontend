@@ -30,6 +30,7 @@ export default function LandingPage() {
       image: '/56735333-removebg-preview.png'
     }
   ];
+  
 
   useEffect(() => {
     setIsMounted(true);
@@ -422,7 +423,7 @@ export default function LandingPage() {
             <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all">
               <div className="h-48 bg-gradient-to-br from-orange-400 to-pink-500 relative overflow-hidden">
                 <img 
-                  src="/api/placeholder/400/300" 
+                  src="/key-note-removebg-preview.png" 
                   alt="Conference Event"
                   className="w-full h-full object-cover"
                 />
@@ -444,7 +445,7 @@ export default function LandingPage() {
             <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all">
               <div className="h-48 bg-gradient-to-br from-purple-500 to-pink-500 relative overflow-hidden">
                 <img 
-                  src="/api/placeholder/400/300" 
+                  src="/incrememntal-sales-removebg-preview.png" 
                   alt="Marketing Event"
                   className="w-full h-full object-cover"
                 />
@@ -466,7 +467,7 @@ export default function LandingPage() {
             <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all">
               <div className="h-48 bg-gradient-to-br from-blue-400 to-indigo-500 relative overflow-hidden">
                 <img 
-                  src="/api/placeholder/400/300" 
+                  src="/smarter-removebg-preview.png" 
                   alt="Workspace Event"
                   className="w-full h-full object-cover"
                 />
@@ -514,12 +515,12 @@ export default function LandingPage() {
             <div className="bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all">
               <div className="flex items-center mb-4">
                 <img 
-                  src="/api/placeholder/50/50" 
+                  src="/00-1-removebg-preview.png" 
                   alt="Taylor Swift"
                   className="w-12 h-12 rounded-full mr-3"
                 />
                 <div>
-                  <h4 className="font-bold text-gray-900">Taylor Swift</h4>
+                  <h4 className="font-bold text-gray-900">— Ayesha Khan, BBA Student</h4>
                   <div className="flex text-yellow-400">
                     {'★★★★★'.split('').map((star, i) => (
                       <span key={i}>{star}</span>
@@ -528,7 +529,7 @@ export default function LandingPage() {
                 </div>
               </div>
               <p className="text-sm text-gray-700">
-                Siekiang, kertu bisa produce hari Itak unus eventes temparus finbustibus, hanya petru mengutut lobortopa languid mutah.
+                "The university’s management is well-organized and responsive. Every process—from admissions to exams—runs smoothly!"
               </p>
             </div>
 
@@ -536,12 +537,12 @@ export default function LandingPage() {
             <div className="bg-gradient-to-br from-yellow-100 to-orange-100 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all">
               <div className="flex items-center mb-4">
                 <img 
-                  src="/api/placeholder/50/50" 
+                  src="/00-2-removebg-preview.png" 
                   alt="Taylor Swift"
                   className="w-12 h-12 rounded-full mr-3"
                 />
                 <div>
-                  <h4 className="font-bold text-gray-900">Taylor Swift</h4>
+                  <h4 className="font-bold text-gray-900">— Ravi Patel, Engineering Student</h4>
                   <div className="flex text-yellow-400">
                     {'★★★★★'.split('').map((star, i) => (
                       <span key={i}>{star}</span>
@@ -550,7 +551,7 @@ export default function LandingPage() {
                 </div>
               </div>
               <p className="text-sm text-gray-700">
-                Siekiang, kertu bisa produce hari Itak unus eventes temparus finbustibus, hanya petru mengutut lobortopa languid mutah.
+                "Efficient administration and supportive staff make campus life so much easier. Truly professional management!"
               </p>
             </div>
 
@@ -558,12 +559,12 @@ export default function LandingPage() {
             <div className="bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all">
               <div className="flex items-center mb-4">
                 <img 
-                  src="/api/placeholder/50/50" 
+                  src="/00-3-removebg-preview.png" 
                   alt="Taylor Swift"
                   className="w-12 h-12 rounded-full mr-3"
                 />
                 <div>
-                  <h4 className="font-bold text-gray-900">Taylor Swift</h4>
+                  <h4 className="font-bold text-gray-900">— Emily Johnson, Faculty Member</h4>
                   <div className="flex text-yellow-400">
                     {'★★★★★'.split('').map((star, i) => (
                       <span key={i}>{star}</span>
@@ -572,7 +573,7 @@ export default function LandingPage() {
                 </div>
               </div>
               <p className="text-sm text-gray-700">
-                Siekiang, kertu bisa produce hari Itak unus eventes temparus finbustibus, hanya petru mengutut lobortopa languid mutah.
+                "Great leadership and transparency in operations. The management genuinely cares about students’ growth."
               </p>
             </div>
 
@@ -580,12 +581,12 @@ export default function LandingPage() {
             <div className="bg-gradient-to-br from-pink-100 to-purple-100 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all">
               <div className="flex items-center mb-4">
                 <img 
-                  src="/api/placeholder/50/50" 
+                  src="/00-4-removebg-preview.png" 
                   alt="Taylor Swift"
                   className="w-12 h-12 rounded-full mr-3"
                 />
                 <div>
-                  <h4 className="font-bold text-gray-900">Taylor Swift</h4>
+                  <h4 className="font-bold text-gray-900">Mohammed Al-Rashid, MBA Student</h4>
                   <div className="flex text-yellow-400">
                     {'★★★★★'.split('').map((star, i) => (
                       <span key={i}>{star}</span>
@@ -594,7 +595,51 @@ export default function LandingPage() {
                 </div>
               </div>
               <p className="text-sm text-gray-700">
-                Siekiang, kertu bisa produce hari Itak unus eventes temparus finbustibus, hanya petru mengutut lobortopa languid mutah.
+                "I appreciate how quickly the management addresses issues and introduces new initiatives for student welfare."
+              </p>
+            </div>
+
+             {/* Review Card 5 */}
+            <div className="bg-gradient-to-br from-pink-100 to-purple-100 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all">
+              <div className="flex items-center mb-4">
+                <img 
+                  src="/00-5-removebg-preview.png" 
+                  alt="Taylor Swift"
+                  className="w-12 h-12 rounded-full mr-3"
+                />
+                <div>
+                  <h4 className="font-bold text-gray-900">jhone, International Student</h4>
+                  <div className="flex text-yellow-400">
+                    {'★★★★★'.split('').map((star, i) => (
+                      <span key={i}>{star}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <p className="text-sm text-gray-700">
+                "Excellent coordination between departments. The management ensures academic and extracurricular balance."
+              </p>
+            </div>
+
+             {/* Review Card 6 */}
+            <div className="bg-gradient-to-br from-pink-100 to-purple-100 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all">
+              <div className="flex items-center mb-4">
+                <img 
+                  src="/00-6-removebg-preview.png" 
+                  alt="Taylor Swift"
+                  className="w-12 h-12 rounded-full mr-3"
+                />
+                <div>
+                  <h4 className="font-bold text-gray-900">Sarah Thompson, Alumni (Class of 2022)</h4>
+                  <div className="flex text-yellow-400">
+                    {'★★★★★'.split('').map((star, i) => (
+                      <span key={i}>{star}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <p className="text-sm text-gray-700">
+                "Professional, proactive, and student-friendly management. They’ve made university life organized and efficient."
               </p>
             </div>
 

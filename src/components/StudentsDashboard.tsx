@@ -9,12 +9,24 @@ interface EnrollmentResponse {
   status: 'active' | 'completed' | 'dropped' | 'withdrawn';
 }
 
+interface RecommendedCourse {
+  id: number;
+  title: string;
+  description: string;
+  code: string;
+  lecturer_name: string;
+  credits: number;
+  // Add other course properties as needed
+}
+
 export default function StudentDashboard() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [enrollments, setEnrollments] = useState<EnrollmentResponse[]>([]);
+  const [recommendedCourses, setRecommendedCourses] = useState<RecommendedCourse[]>([]);
   const [interests, setInterests] = useState('');
   const [loading, setLoading] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isGettingRecommendations, setIsGettingRecommendations] = useState(false);
 
   useEffect(() => {
     fetchCourses();
@@ -76,8 +88,29 @@ export default function StudentDashboard() {
   };
 
   const getRecommendations = async () => {
-    const response = await api.post('/ai/recommend', { interests });
-    console.log('Recommended courses:', response.data);
+    if (!interests.trim()) {
+      setError('Please enter your interests to get recommendations');
+      setTimeout(() => setError(null), 3000);
+      return;
+    }
+
+    setIsGettingRecommendations(true);
+    setError(null);
+
+    try {
+      const response = await api.post('/ai/recommend', { interests });
+      console.log('Recommended courses:', response.data);
+      
+      // Store the recommended courses in state
+      setRecommendedCourses(response.data as RecommendedCourse[]);
+      
+    } catch (error: any) {
+      console.error('Failed to get recommendations:', error);
+      setError('Failed to get recommendations. Please try again.');
+      setTimeout(() => setError(null), 3000);
+    } finally {
+      setIsGettingRecommendations(false);
+    }
   };
 
   const getStatusIcon = (status: string) => {
@@ -155,17 +188,91 @@ export default function StudentDashboard() {
                 value={interests}
                 onChange={(e) => setInterests(e.target.value)}
                 className="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-purple-500 transition-colors bg-white"
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') {
+                    getRecommendations();
+                  }
+                }}
               />
               <button
                 onClick={getRecommendations}
-                className="px-6 py-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors font-semibold flex items-center gap-2"
+                disabled={isGettingRecommendations}
+                className="px-6 py-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors font-semibold flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Search className="w-5 h-5" />
-                Find Courses
+                {isGettingRecommendations ? 'Finding...' : 'Find Courses'}
               </button>
             </div>
           </div>
         </div>
+
+        {/* Display Recommended Courses */}
+        {recommendedCourses.length > 0 && (
+          <div className="mt-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Recommended Courses for "{interests}"</h3>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {recommendedCourses.map(course => {
+                const isEnrolled = isCourseEnrolled(course.id);
+                const isLoading = loading === course.id;
+
+                return (
+                  <div key={course.id} className="bg-white rounded-xl border border-purple-200 overflow-hidden hover:shadow-lg transition-all">
+                    {/* Course Header */}
+                    <div className={`p-4 relative overflow-hidden ${
+                      isEnrolled 
+                        ? 'bg-gradient-to-r from-green-500 to-emerald-600' 
+                        : 'bg-gradient-to-r from-purple-500 to-indigo-600'
+                    }`}>
+                      <BookOpen className="w-8 h-8 text-white/90 mb-2" />
+                      <h4 className="text-lg font-bold text-white">{course.title}</h4>
+                      {isEnrolled && (
+                        <div className="absolute top-2 right-2 bg-white/20 backdrop-blur-sm rounded-full px-2 py-1">
+                          <span className="text-white text-xs font-semibold">ENROLLED</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Course Content */}
+                    <div className="p-4">
+                      <p className="text-gray-600 text-sm mb-3 line-clamp-2">{course.description}</p>
+                      
+                      <div className="flex items-center justify-between text-xs text-gray-600 mb-3">
+                        <span className="font-medium">Code: {course.code}</span>
+                        <span>{course.credits || 3} credits</span>
+                      </div>
+
+                      {isEnrolled ? (
+                        <div className="flex items-center justify-center gap-2 py-2 bg-green-50 text-green-700 rounded-lg font-semibold border border-green-200 text-sm">
+                          <CheckCircle className="w-4 h-4" />
+                          Enrolled
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => enrollCourse(course.id)}
+                          disabled={isLoading}
+                          className={`w-full py-2 rounded-lg transition-colors font-semibold flex items-center justify-center gap-2 text-sm ${
+                            isLoading
+                              ? 'bg-gray-400 text-white cursor-not-allowed'
+                              : 'bg-purple-600 text-white hover:bg-purple-700'
+                          }`}
+                        >
+                          {isLoading ? (
+                            <>
+                              <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                              Enrolling...
+                            </>
+                          ) : (
+                            'Enroll Now'
+                          )}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* My Enrollments */}
