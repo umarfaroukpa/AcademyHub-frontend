@@ -2,8 +2,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import {   GraduationCap, User, Mail, Shield, BookOpen, Users, Settings, Calendar, Award, FileText, Edit, Clock, Camera, Save, X, Upload } from 'lucide-react';
- import api from '../../../lib/api';
+import {   GraduationCap, User, Mail, Shield, BookOpen, Users, Settings, Calendar, Award, FileText, Edit, Clock, Camera, Save, X, Upload, Zap } from 'lucide-react';
+import api from '../../../lib/api';
 
 interface UserProfile {
   id: number;
@@ -251,6 +251,16 @@ const ProfilePage = () => {
       default:
         return 'User';
     }
+  };
+
+  // Navigation handler for student dashboard
+  const navigateToStudentDashboard = () => {
+    router.push('/dashboard');
+  };
+
+  // Navigation handler for quick actions
+  const navigateToQuickActions = () => {
+    router.push('/dashboard?tab=quick-actions');
   };
 
   if (loading) {
@@ -563,11 +573,17 @@ const ProfilePage = () => {
                   <div className="space-y-3">
                     {user.role === 'student' && (
                       <>
-                        <Link href="/courses" className="flex items-center gap-3 p-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                        <Link 
+                          href="/dashboard" 
+                          className="flex items-center gap-3 p-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                        >
                           <BookOpen className="h-5 w-5 text-blue-500" />
                           <span>Browse Courses</span>
                         </Link>
-                        <Link href="/my-courses" className="flex items-center gap-3 p-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                        <Link 
+                          href="/dashboard" 
+                          className="flex items-center gap-3 p-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                        >
                           <GraduationCap className="h-5 w-5 text-green-500" />
                           <span>My Courses</span>
                         </Link>
@@ -575,11 +591,17 @@ const ProfilePage = () => {
                     )}
                     {user.role === 'lecturer' && (
                       <>
-                        <Link href="/my-courses" className="flex items-center gap-3 p-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                        <Link 
+                          href="/dashboard" 
+                          className="flex items-center gap-3 p-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                        >
                           <BookOpen className="h-5 w-5 text-blue-500" />
                           <span>My Courses</span>
                         </Link>
-                        <Link href="/create-course" className="flex items-center gap-3 p-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                        <Link 
+                          href="/dashboard" 
+                          className="flex items-center gap-3 p-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                        >
                           <FileText className="h-5 w-5 text-green-500" />
                           <span>Create Course</span>
                         </Link>
@@ -587,17 +609,26 @@ const ProfilePage = () => {
                     )}
                     {user.role === 'admin' && (
                       <>
-                        <Link href="/dashboard" className="flex items-center gap-3 p-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                        <Link 
+                          href="/dashboard" 
+                          className="flex items-center gap-3 p-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                        >
                           <Users className="h-5 w-5 text-blue-500" />
                           <span>Admin Dashboard</span>
                         </Link>
-                        <Link href="/dashboard" className="flex items-center gap-3 p-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                        <Link 
+                          href="/dashboard" 
+                          className="flex items-center gap-3 p-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                        >
                           <BookOpen className="h-5 w-5 text-purple-500" />
                           <span>Manage Courses</span>
                         </Link>
                       </>
                     )}
-                    <Link href="/settings" className="flex items-center gap-3 p-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                    <Link 
+                      href="/settings" 
+                      className="flex items-center gap-3 p-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                    >
                       <Settings className="h-5 w-5 text-gray-500" />
                       <span>Settings</span>
                     </Link>
