@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import api from '../../lib/api';
 import AssignmentSubmission from '../components/AssignmentSubmission';
-import { 
-  BookOpen, Sparkles, CheckCircle, Clock, XCircle, Search, GraduationCap, 
+import { BookOpen,
+   Sparkles, CheckCircle, Clock, XCircle, Search, GraduationCap, 
   AlertCircle, FileText, LayoutDashboard, Users, Zap, Play, Star, 
   Target, TrendingUp, Calendar, Bell, MessageSquare, Download,
   ArrowRight, ChevronRight, Info, AlertTriangle
