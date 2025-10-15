@@ -359,16 +359,6 @@ export default function LandingPage() {
             </div>
           ))}
         </div>
-
-        {/* See All Button */}
-        <div className="text-center mt-12">
-          <Link
-            href="/courses"
-            className="inline-block px-8 py-3 border-2 border-purple-600 text-purple-600 rounded-xl hover:bg-purple-600 hover:text-white transition-all font-semibold"
-          >
-            See All Events
-          </Link>
-        </div>
       </section>
 
       {/* Upcoming Events Section */}
@@ -484,12 +474,6 @@ export default function LandingPage() {
                 </div>
               </div>
             </div>
-          </div>
-
-          <div className="text-center">
-            <button className="px-8 py-3 border-2 border-purple-600 text-purple-600 rounded-xl hover:bg-purple-600 hover:text-white transition-all font-semibold">
-              Load More
-            </button>
           </div>
         </div>
       </section>
@@ -630,7 +614,7 @@ export default function LandingPage() {
                   className="w-12 h-12 rounded-full mr-3"
                 />
                 <div>
-                  <h4 className="font-bold text-gray-900">Sarah Thompson, Alumni (Class of 2022)</h4>
+                  <h4 className="font-bold text-gray-900">Peter Thompson, Alumni (Class of 2022)</h4>
                   <div className="flex text-yellow-400">
                     {'★★★★★'.split('').map((star, i) => (
                       <span key={i}>{star}</span>
@@ -642,29 +626,13 @@ export default function LandingPage() {
                 "Professional, proactive, and student-friendly management. They’ve made university life organized and efficient."
               </p>
             </div>
-
-            {/* Add Yours Card */}
-            <div className="bg-white rounded-2xl p-6 border-2 border-dashed border-gray-300 flex flex-col items-center justify-center hover:border-purple-500 transition-all cursor-pointer">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-              </div>
-              <span className="text-gray-600 font-semibold">Add Yours</span>
-            </div>
-          </div>
-
-          <div className="text-center">
-            <button className="px-8 py-3 border-2 border-purple-600 text-purple-600 rounded-xl hover:bg-purple-600 hover:text-white transition-all font-semibold">
-              See All
-            </button>
-          </div>
+          </div>          
         </div>
       </section>
       
       {/* CTA Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 bg-white">
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl p-12 md:p-16 text-center">
+        <div className="bg-gradient-to-br from-purple-600 via-purple-800 to-pink-600 rounded-3xl p-12 md:p-16 text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
             Ready to Get Started?
           </h2>
