@@ -48,6 +48,8 @@ export default function AdminDashboard() {
   });
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [showAddUserModal, setShowAddUserModal] = useState(false);
+  const [showCreateCourseModal, setShowCreateCourseModal] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -87,17 +89,10 @@ export default function AdminDashboard() {
 
   const fetchStats = async () => {
     try {
-      // Option 1: Use proper typing with the API call
       const response = await api.get<SystemStats>('/admin/stats');
       setStats(response.data);
-      
-      // Option 2: If the above doesn't work, use type assertion:
-      // const response = await api.get('/admin/stats');
-      // const statsData = response.data as SystemStats;
-      // setStats(statsData);
     } catch (error: any) {
       console.error('Error fetching stats:', error);
-      // Set default stats if API fails
       setStats({
         total_students: 0,
         total_lecturers: 0,
@@ -112,19 +107,19 @@ export default function AdminDashboard() {
   };
 
   const fetchEnrollments = async () => {
-  try {
-    const response = await api.get<EnrollmentResponse[]>('/admin/enrollments'); 
-    setEnrollments(response.data);
-  } catch (error: any) {
-    handleError(error, 'enrollments');
-  } finally {
-    setLoading(prev => ({ ...prev, enrollments: false }));
-  }
-};
+    try {
+      const response = await api.get<EnrollmentResponse[]>('/admin/enrollments'); 
+      setEnrollments(response.data);
+    } catch (error: any) {
+      handleError(error, 'enrollments');
+    } finally {
+      setLoading(prev => ({ ...prev, enrollments: false }));
+    }
+  };
 
   const fetchCourses = async () => {
     try {
-     const response = await api.get<Course[]>('/admin/courses');
+      const response = await api.get<Course[]>('/admin/courses');
       setCourses(response.data);
     } catch (error: any) {
       handleError(error, 'courses');
@@ -155,7 +150,7 @@ export default function AdminDashboard() {
     }
   };
 
-const updateEnrollmentStatus = async (enrollmentId: number, newStatus: 'active' | 'completed' | 'dropped' | 'withdrawn') => {
+  const updateEnrollmentStatus = async (enrollmentId: number, newStatus: 'active' | 'completed' | 'dropped' | 'withdrawn') => {
     try {
       await api.put(`/admin/enrollments/${enrollmentId}`, { status: newStatus });
       
@@ -200,6 +195,54 @@ const updateEnrollmentStatus = async (enrollmentId: number, newStatus: 'active' 
     }
   };
 
+  const handleAddUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+    
+    try {
+      const userData = {
+        name: formData.get('name'),
+        email: formData.get('email'),
+        password: formData.get('password'),
+        role: formData.get('role')
+      };
+
+      await api.post('/admin/users', userData);
+      alert('User created successfully!');
+      setShowAddUserModal(false);
+      fetchUsers();
+      fetchStats();
+      (e.target as HTMLFormElement).reset();
+    } catch (error: any) {
+      alert(error.response?.data?.error || 'Failed to create user');
+    }
+  };
+
+  const handleCreateCourse = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+    
+    try {
+      const courseData = {
+        code: formData.get('code'),
+        title: formData.get('title'),
+        description: formData.get('description'),
+        credits: parseInt(formData.get('credits') as string) || 3,
+        max_students: parseInt(formData.get('max_students') as string) || 50,
+        lecturer_id: parseInt(formData.get('lecturer_id') as string)
+      };
+
+      await api.post('/admin/courses', courseData);
+      alert('Course created successfully!');
+      setShowCreateCourseModal(false);
+      fetchCourses();
+      fetchStats();
+      (e.target as HTMLFormElement).reset();
+    } catch (error: any) {
+      alert(error.response?.data?.error || 'Failed to create course');
+    }
+  };
+
   const filteredUsers = users.filter(user => 
     user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -217,10 +260,7 @@ const updateEnrollmentStatus = async (enrollmentId: number, newStatus: 'active' 
     enrollment.course_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const logout = () => {
-    clearAuth();
-    router.replace('/');
-  };
+  const lecturers = users.filter(user => user.role === 'lecturer');
 
   const loginAgain = () => {
     clearAuth();
@@ -263,12 +303,6 @@ const updateEnrollmentStatus = async (enrollmentId: number, newStatus: 'active' 
             <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors font-semibold flex items-center gap-2">
               <Settings className="w-4 h-4" />
               Settings
-            </button>
-            <button
-              onClick={logout}
-              className="px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors font-semibold"
-            >
-              Logout
             </button>
           </div>
         </div>
@@ -378,13 +412,19 @@ const updateEnrollmentStatus = async (enrollmentId: number, newStatus: 'active' 
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
               <div className="grid grid-cols-2 gap-3">
-                <button className="p-4 bg-blue-50 border border-blue-200 rounded-xl hover:bg-blue-100 transition-colors text-center">
+                <button 
+                  onClick={() => setShowAddUserModal(true)}
+                  className="p-4 bg-blue-50 border border-blue-200 rounded-xl hover:bg-blue-100 transition-colors text-center"
+                >
                   <UserPlus className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-                  <span className="text-sm font-medium text-blue-700">Add User</span>
+                  <span className="text-sm font-medium cursor-pointer text-blue-700">Add User</span>
                 </button>
-                <button className="p-4 bg-green-50 border border-green-200 rounded-xl hover:bg-green-100 transition-colors text-center">
+                <button 
+                  onClick={() => setShowCreateCourseModal(true)}
+                  className="p-4 bg-green-50 border border-green-200 rounded-xl hover:bg-green-100 transition-colors text-center"
+                >
                   <BookPlus className="w-8 h-8 text-green-600 mx-auto mb-2" />
-                  <span className="text-sm font-medium text-green-700">Create Course</span>
+                  <span className="text-sm font-medium cursor-pointer text-green-700">Create Course</span>
                 </button>
               </div>
             </div>
@@ -399,7 +439,7 @@ const updateEnrollmentStatus = async (enrollmentId: number, newStatus: 'active' 
                     </div>
                     <div className="flex-1">
                       <p className="text-sm text-gray-700">
-                        <span className="font-medium">{enrollment.student_name}</span> wants to enroll in{' '}
+                        <span className="font-medium">{enrollment.student_name}</span> enrolled in{' '}
                         <span className="font-medium">{enrollment.course_name}</span>
                       </p>
                     </div>
@@ -418,12 +458,15 @@ const updateEnrollmentStatus = async (enrollmentId: number, newStatus: 'active' 
         </>
       )}
 
-      {/* Users Tab */}
+      {/* Users Tab - keeping existing code */}
       {activeTab === 'users' && (
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-gray-900">User Management</h2>
-            <button className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-semibold flex items-center gap-2">
+            <button 
+              onClick={() => setShowAddUserModal(true)}
+              className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-semibold flex items-center gap-2"
+            >
               <UserPlus className="w-4 h-4" />
               Add User
             </button>
@@ -500,9 +543,6 @@ const updateEnrollmentStatus = async (enrollmentId: number, newStatus: 'active' 
                           >
                             {user.is_active ? 'Deactivate' : 'Activate'}
                           </button>
-                          <button className="p-1 text-gray-400 hover:text-gray-600">
-                            <MoreVertical className="w-4 h-4" />
-                          </button>
                         </div>
                       </td>
                     </tr>
@@ -519,7 +559,10 @@ const updateEnrollmentStatus = async (enrollmentId: number, newStatus: 'active' 
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-gray-900">Course Management</h2>
-            <button className="px-4 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors font-semibold flex items-center gap-2">
+            <button 
+              onClick={() => setShowCreateCourseModal(true)}
+              className="px-4 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors font-semibold flex items-center gap-2"
+            >
               <BookPlus className="w-4 h-4" />
               Create Course
             </button>
@@ -599,27 +642,38 @@ const updateEnrollmentStatus = async (enrollmentId: number, newStatus: 'active' 
                         </div>
                         <div>
                           <span className="font-semibold text-gray-900">{enrollment.student_name}</span>
-                          <p className="text-sm text-gray-600">wants to enroll in <span className="font-medium text-gray-900">{enrollment.course_name}</span></p>
+                          <p className="text-sm text-gray-600">enrolled in <span className="font-medium text-gray-900">{enrollment.course_name}</span></p>
                           <p className="text-xs text-gray-500 mt-1">
-                            Requested on {new Date(enrollment.created_at).toLocaleDateString()}
+                            Enrolled on {new Date(enrollment.created_at).toLocaleDateString()}
                           </p>
                         </div>
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <button
-                        onClick={() => updateEnrollmentStatus(enrollment.id, 'active')}
-                        className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
-                      >
-                        <CheckCircle className="w-4 h-4" />
-                        Approve
-                      </button>
+                      {enrollment.status !== 'active' && (
+                        <button
+                          onClick={() => updateEnrollmentStatus(enrollment.id, 'active')}
+                          className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
+                        >
+                          <CheckCircle className="w-4 h-4" />
+                          Approve
+                        </button>
+                      )}
+                      {enrollment.status === 'active' && (
+                        <button
+                          onClick={() => updateEnrollmentStatus(enrollment.id, 'completed')}
+                          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                        >
+                          <CheckCircle className="w-4 h-4" />
+                          Complete
+                        </button>
+                      )}
                       <button
                         onClick={() => updateEnrollmentStatus(enrollment.id, 'withdrawn')}
                         className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
                       >
                         <XCircle className="w-4 h-4" />
-                        Reject
+                        {enrollment.status === 'active' ? 'Withdraw' : 'Reject'}
                       </button>
                     </div>
                   </div>
@@ -627,6 +681,226 @@ const updateEnrollmentStatus = async (enrollmentId: number, newStatus: 'active' 
               ))}
             </div>
           )}
+        </div>
+      )}
+
+      {/* Add User Modal */}
+      {showAddUserModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-gray-900">Add New User</h2>
+                <button
+                  onClick={() => setShowAddUserModal(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <XCircle className="w-6 h-6" />
+                </button>
+              </div>
+              
+              <form onSubmit={handleAddUser} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Full Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    name="name"
+                    type="text"
+                    placeholder="e.g., John Doe"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition-colors"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Email <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    name="email"
+                    type="email"
+                    placeholder="e.g., john@example.com"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition-colors"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Password <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    name="password"
+                    type="password"
+                    placeholder="Enter password"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition-colors"
+                    required
+                    minLength={6}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Role <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    name="role"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition-colors"
+                    required
+                  >
+                    <option value="">Select Role</option>
+                    <option value="student">Student</option>
+                    <option value="lecturer">Lecturer</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                </div>
+
+                <div className="flex gap-3 pt-4">
+                  <button
+                    type="submit"
+                    className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-semibold"
+                  >
+                    Create User
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowAddUserModal(false)}
+                    className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors font-semibold"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Create Course Modal */}
+      {showCreateCourseModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-gray-900">Create New Course</h2>
+                <button
+                  onClick={() => setShowCreateCourseModal(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <XCircle className="w-6 h-6" />
+                </button>
+              </div>
+              
+              <form onSubmit={handleCreateCourse} className="space-y-4">
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Course Code <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      name="code"
+                      type="text"
+                      placeholder="e.g., CS101"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition-colors"
+                      required
+                      maxLength={20}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Credits <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      name="credits"
+                      type="number"
+                      placeholder="e.g., 3"
+                      min="1"
+                      max="10"
+                      defaultValue="3"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition-colors"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Course Title <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    name="title"
+                    type="text"
+                    placeholder="e.g., Introduction to Computer Science"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition-colors"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Description <span className="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    name="description"
+                    placeholder="Provide a brief description of the course..."
+                    rows={4}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition-colors resize-none"
+                    required
+                  />
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Max Students
+                    </label>
+                    <input
+                      name="max_students"
+                      type="number"
+                      placeholder="e.g., 50"
+                      min="1"
+                      defaultValue="50"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Lecturer <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      name="lecturer_id"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition-colors"
+                      required
+                    >
+                      <option value="">Select Lecturer</option>
+                      {lecturers.map(lecturer => (
+                        <option key={lecturer.id} value={lecturer.id}>
+                          {lecturer.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="flex gap-3 pt-4">
+                  <button
+                    type="submit"
+                    className="flex-1 px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors font-semibold"
+                  >
+                    Create Course
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowCreateCourseModal(false)}
+                    className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors font-semibold"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
       )}
     </div>
