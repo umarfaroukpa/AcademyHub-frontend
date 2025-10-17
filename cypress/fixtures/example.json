@@ -1,0 +1,21 @@
+
+{
+  "name": "Using fixtures to represent data",
+  "email": "hello@cypress.io",
+  "body": "Fixtures are a great way to mock data for responses to routes",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "cypress:headless": "cypress run --headless",
+    "test:e2e": "start-server-and-test dev http://localhost:3000 cypress:open",
+    "test:e2e:ci": "start-server-and-test dev http://localhost:3000 cypress:run"
+  },
+  "devDependencies": {
+    "cypress": "^13.6.0",
+    "@testing-library/cypress": "^10.0.1",
+    "start-server-and-test": "^2.0.3"
+  }
+}
