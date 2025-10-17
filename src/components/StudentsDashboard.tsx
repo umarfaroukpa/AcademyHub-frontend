@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Course, Enrollment } from '../../types/types';
+import { Course } from '../../types/types';
 import api from '../../lib/api';
 import AssignmentSubmission from '../components/AssignmentSubmission';
-import { BookOpen, Sparkles, CheckCircle, Clock, XCircle, Search, GraduationCap, AlertCircle, FileText, LayoutDashboard } from 'lucide-react';
+import StudyGroups from '../components/Study-Gruops';
+import { BookOpen, Sparkles, CheckCircle, Clock, XCircle, Search, GraduationCap, AlertCircle, FileText, LayoutDashboard, Users } from 'lucide-react';
 
 interface EnrollmentResponse {
   id: number;
@@ -19,7 +20,7 @@ interface RecommendedCourse {
   credits: number;
 }
 
-type StudentTab = 'dashboard' | 'assignments' | 'enrollments';
+type StudentTab = 'dashboard' | 'assignments' | 'enrollments' | 'study-groups';
 
 export default function StudentDashboard() {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -39,9 +40,9 @@ export default function StudentDashboard() {
   const fetchCourses = async () => {
     try {
       console.log('🎓 Fetching courses from:', api.defaults.baseURL + '/courses');
-      const response = await api.get('/courses');
+      const response = await api.get<Course[]>('/courses');
       console.log('✅ Courses fetched:', response.data);
-      setCourses(response.data as Course[]);
+      setCourses(response.data);
     } catch (error: any) {
       console.error('❌ Failed to fetch courses:', error);
       console.error('Error details:', {
@@ -57,9 +58,9 @@ export default function StudentDashboard() {
   const fetchEnrollments = async () => {
     try {
       console.log('📋 Fetching enrollments from:', api.defaults.baseURL + '/enrollments');
-      const response = await api.get('/enrollments');
+      const response = await api.get<EnrollmentResponse[]>('/enrollments');
       console.log('✅ Enrollments fetched:', response.data);
-      setEnrollments(response.data as EnrollmentResponse[]);
+      setEnrollments(response.data);
     } catch (error: any) {
       console.error('❌ Failed to fetch enrollments:', error);
       console.error('Error details:', {
@@ -118,9 +119,9 @@ export default function StudentDashboard() {
 
     try {
       console.log('🤖 Getting AI recommendations for:', interests);
-      const response = await api.post('/ai/recommend', { interests });
+      const response = await api.post<RecommendedCourse[]>('/ai/recommend', { interests });
       console.log('✅ Recommendations received:', response.data);
-      setRecommendedCourses(response.data as RecommendedCourse[]);
+      setRecommendedCourses(response.data);
     } catch (error: any) {
       console.error('❌ Failed to get recommendations:', error);
       setError('Failed to get recommendations. Please try again.');
@@ -166,7 +167,8 @@ export default function StudentDashboard() {
         {[
           { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
           { id: 'assignments', label: 'Assignments', icon: FileText },
-          { id: 'enrollments', label: 'My Enrollments', icon: GraduationCap }
+          { id: 'enrollments', label: 'My Enrollments', icon: GraduationCap },
+          { id: 'study-groups', label: 'Study Groups', icon: Users }
         ].map(({ id, label, icon: Icon }) => (
           <button
             key={id}
@@ -445,6 +447,11 @@ export default function StudentDashboard() {
             </div>
           )}
         </div>
+      )}
+
+      {/* Study Groups Tab */}
+      {activeTab === 'study-groups' && (
+        <StudyGroups />
       )}
     </div>
   );
