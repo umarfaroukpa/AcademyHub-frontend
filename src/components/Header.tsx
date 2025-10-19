@@ -133,7 +133,7 @@ export default function DynamicHeader() {
 
   return (
     <header 
-      className="sticky top-0 z-50 shadow-lg relative overflow-hidden"
+      className="sticky cursor-pointer top-0 z-50 shadow-lg relative overflow-hidden"
       style={{
         background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
       }}
@@ -241,20 +241,20 @@ export default function DynamicHeader() {
                 onClick={handleLogout}
                 className="flex items-center space-x-2 px-4 py-2 bg-white/20 backdrop-blur-lg text-white hover:bg-white/30 rounded-lg transition-colors font-medium border border-white/30"
               >
-                <LogOut className="w-4 h-4" />
+                <LogOut className="w-4 h-4 cursor-pointer" />
                 <span>Logout</span>
               </button>
             ) : (
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-3 cursor-pointer">
                 <button
                   onClick={() => router.push('/login')}
-                  className="px-4 py-2 text-white hover:bg-white/20 backdrop-blur-lg rounded-lg font-medium border border-white/30 transition-colors"
+                  className="px-4 py-2 text-white cursor-pointer hover:bg-white/20 backdrop-blur-lg rounded-lg font-medium border border-white/30 transition-colors"
                 >
                   Login
                 </button>
                 <button
                   onClick={() => router.push('/signup')}
-                  className="px-4 py-2 bg-white/30 backdrop-blur-lg text-white hover:bg-white/40 rounded-lg font-medium border border-white/50 transition-colors"
+                  className="px-4 py-2 bg-white/30 cursor-pointer backdrop-blur-lg text-white hover:bg-white/40 rounded-lg font-medium border border-white/50 transition-colors"
                 >
                   Sign Up
                 </button>
@@ -327,7 +327,7 @@ export default function DynamicHeader() {
                   className="w-full flex items-center space-x-3 px-4 py-3 text-white hover:bg-white/20 backdrop-blur-lg rounded-lg transition-colors border border-white/20"
                   onClick={() => user ? router.push('/profile') : router.push('/login')}
                 >
-                  <User className="w-5 h-5" />
+                  <User className="w-5 h-5 cursor-pointer" />
                   <span>Profile</span>
                 </button>
 
@@ -335,7 +335,7 @@ export default function DynamicHeader() {
                   className="w-full flex items-center space-x-3 px-4 py-3 text-white hover:bg-white/20 backdrop-blur-lg rounded-lg transition-colors border border-white/20"
                   onClick={() => user ? router.push('/profile') : router.push('/login')}
                 >
-                  <Settings className="w-5 h-5" />
+                  <Settings className="w-5 h-5 cursor-pointer" />
                   <span>Settings</span>
                 </button>
 
@@ -344,14 +344,14 @@ export default function DynamicHeader() {
                     onClick={handleLogout}
                     className="w-full flex items-center space-x-3 px-4 py-3 bg-white/20 backdrop-blur-lg text-white hover:bg-white/30 rounded-lg transition-colors font-medium border border-white/30"
                   >
-                    <LogOut className="w-5 h-5" />
+                    <LogOut className="w-5 h-5 cursor-pointer" />
                     <span>Logout</span>
                   </button>
                 ) : (
                   <>
                     <button
                       onClick={() => router.push('/login')}
-                      className="w-full px-4 py-3 text-white hover:bg-white/20 backdrop-blur-lg rounded-lg transition-colors font-medium text-left border border-white/20"
+                      className="w-full px-4 cursor-pointer py-3 text-white hover:bg-white/20 backdrop-blur-lg rounded-lg transition-colors font-medium text-left border border-white/20"
                     >
                       Login
                     </button>

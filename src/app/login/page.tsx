@@ -80,11 +80,9 @@ export default function LoginPage() {
     setEmail(testEmail);
     setPassword(testPassword);
     
-    setTimeout(() => {
-      const form = document.querySelector('form');
-      if (form) {
-        form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
-      }
+    // Use the actual login function instead of simulating form submission
+    setTimeout(async () => {
+      await handleLogin(new Event('submit') as any);
     }, 0);
   };
 
@@ -94,6 +92,7 @@ export default function LoginPage() {
       style={{
         background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
       }}
+      data-testid="login-page"
     >
       {/* Background Pattern Overlay */}
       <div 
@@ -155,15 +154,18 @@ export default function LoginPage() {
         {/* Right Side - Login Form */}
         <div className="w-full max-w-md">
           <div className="bg-white/95 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/50">
-            <div className="text-center mb-6 md:hidden">
+            {/* Visible on all screen sizes for testing */}
+            <div className="text-center mb-6">
               <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl mb-4">
                 <GraduationCap className="w-10 h-10 text-white" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-800">Welcome Back!</h2>
+              <h2 className="text-2xl font-bold text-gray-800" data-testid="login-title">
+                Welcome Back!
+              </h2>
               <p className="text-gray-600">Login to your account</p>
             </div>
 
-            <form onSubmit={handleLogin} className="space-y-5">
+            <form onSubmit={handleLogin} className="space-y-5" data-testid="login-form">
               <div>
                 <label className="block text-gray-700 text-sm font-semibold mb-2">
                   Email address*
@@ -175,6 +177,7 @@ export default function LoginPage() {
                   className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:outline-none transition-colors bg-gray-50 text-gray-800 placeholder-gray-400"
                   placeholder="Enter email address"
                   required
+                  data-testid="email-input"
                 />
               </div>
 
@@ -190,11 +193,13 @@ export default function LoginPage() {
                     className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:outline-none transition-colors bg-gray-50 text-gray-800 placeholder-gray-400"
                     placeholder="Enter your password"
                     required
+                    data-testid="password-input"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 text-sm font-medium"
+                    data-testid="show-password-button"
                   >
                     {showPassword ? 'Hide' : 'Show'}
                   </button>
@@ -202,7 +207,10 @@ export default function LoginPage() {
               </div>
 
               {error && (
-                <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm">
+                <div 
+                  className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm"
+                  data-testid="error-message"
+                >
                   {error}
                 </div>
               )}
@@ -211,6 +219,7 @@ export default function LoginPage() {
                 type="submit"
                 disabled={isLoading}
                 className="w-full py-3.5 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 text-white rounded-xl font-semibold transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                data-testid="login-button"
               >
                 {isLoading ? 'Logging in...' : 'Login Account'}
               </button>
@@ -243,6 +252,7 @@ export default function LoginPage() {
                   onClick={() => quickLogin('student@test.com', 'student123')}
                   disabled={isLoading}
                   className="px-3 py-2 text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg transition-colors disabled:opacity-50"
+                  data-testid="quick-login-student"
                 >
                   Student
                 </button>
@@ -250,6 +260,7 @@ export default function LoginPage() {
                   onClick={() => quickLogin('lecturer@test.com', 'lecturer123')}
                   disabled={isLoading}
                   className="px-3 py-2 text-xs bg-green-50 hover:bg-green-100 text-green-700 rounded-lg transition-colors disabled:opacity-50"
+                  data-testid="quick-login-lecturer"
                 >
                   Lecturer
                 </button>
@@ -257,6 +268,7 @@ export default function LoginPage() {
                   onClick={() => quickLogin('admin@test.com', 'admin123')}
                   disabled={isLoading}
                   className="px-3 py-2 text-xs bg-red-50 hover:bg-red-100 text-red-700 rounded-lg transition-colors disabled:opacity-50"
+                  data-testid="quick-login-admin"
                 >
                   Admin
                 </button>
@@ -265,7 +277,11 @@ export default function LoginPage() {
 
             <p className="text-center text-sm text-gray-600 mt-6">
               Haven't an Account?{' '}
-              <Link href="/signup" className="text-purple-600 hover:text-purple-700 font-semibold">
+              <Link 
+                href="/signup" 
+                className="text-purple-600 hover:text-purple-700 font-semibold"
+                data-testid="signup-link"
+              >
                 Click Here to Register
               </Link>
             </p>

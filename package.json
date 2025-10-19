@@ -6,7 +6,12 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "cypress:headless": "cypress run --headless",
+    "test:e2e": "start-server-and-test dev http://localhost:3000 cypress:open",
+    "test:e2e:ci": "start-server-and-test dev http://localhost:3000 cypress:run"
   },
   "dependencies": {
     "@react-oauth/google": "^0.12.2",
@@ -28,6 +33,7 @@
     "cypress": "^15.4.0",
     "eslint": "^9",
     "eslint-config-next": "15.5.3",
+    "start-server-and-test": "^2.1.2",
     "tailwindcss": "^4",
     "typescript": "^5.9.3"
   }

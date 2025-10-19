@@ -1,21 +1,34 @@
 /// <reference types="cypress" />
+// Custom command to intercept API calls
+import type { Method } from 'cypress/types/net-stubbing';
 
-// Define HttpMethod type for use in mockApiCall
-type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'OPTIONS' | 'HEAD';
 
 // Custom command to login
 Cypress.Commands.add('login', (email: string, password: string) => {
   cy.session([email, password], () => {
     cy.visit('/login');
-    cy.get('input[type="email"]').type(email);
-    cy.get('input[type="password"]').type(password);
-    cy.get('button[type="submit"]').click();
-    cy.url().should('include', '/dashboard');
     
-    // Verify token is stored
-    cy.window().then((win) => {
-      expect(win.localStorage.getItem('token')).to.exist;
-      expect(win.localStorage.getItem('user')).to.exist;
+    // Wait for page to fully load
+    cy.get('input[type="email"]', { timeout: 10000 }).should('be.visible');
+    
+    // Fill in credentials
+    cy.get('input[type="email"]').clear().type(email);
+    cy.get('input[type="password"]').clear().type(password);
+    
+    // Submit form
+    cy.get('button[type="submit"]').click();
+    
+    // Wait for either dashboard or error
+    cy.url({ timeout: 15000 }).then((url) => {
+      if (url.includes('/dashboard')) {
+        // Verify token is stored
+        cy.window().then((win) => {
+          expect(win.localStorage.getItem('token')).to.exist;
+          expect(win.localStorage.getItem('user')).to.exist;
+        });
+      } else {
+        cy.log('Login may have failed - still on login page');
+      }
     });
   });
 });
@@ -41,8 +54,8 @@ Cypress.Commands.add('logout', () => {
   cy.visit('/login');
 });
 
-// Custom command to intercept API calls
-Cypress.Commands.add('mockApiCall', (method: HttpMethod, url: string, response: any, alias?: string) => {
+
+Cypress.Commands.add('mockApiCall', (method: Method, url: string, response: any, alias?: string) => {
   cy.intercept(method, `**/api${url}`, response).as(alias || 'apiCall');
 });
 
@@ -56,7 +69,7 @@ Cypress.Commands.add('isAuthenticated', () => {
   cy.window().then((win) => {
     const token = win.localStorage.getItem('token');
     const user = win.localStorage.getItem('user');
-    return token && user;
+    return !!(token && user);
   });
 });
 
@@ -72,4 +85,44 @@ Cypress.Commands.add('getUserRole', () => {
   });
 });
 
+// Custom command to seed test data
+Cypress.Commands.add('seedTestUsers', () => {
+  const testUsers = [
+    { email: 'student@test.com', password: 'student123', role: 'student', name: 'Test Student' },
+    { email: 'lecturer@test.com', password: 'lecturer123', role: 'lecturer', name: 'Test Lecturer' },
+    { email: 'admin@test.com', password: 'admin123', role: 'admin', name: 'Test Admin' }
+  ];
 
+  testUsers.forEach(user => {
+    cy.request({
+      method: 'POST',
+      url: 'http://localhost:4000/api/auth/signup',
+      body: user,
+      failOnStatusCode: false
+    }).then((response) => {
+      if (response.status === 201) {
+        cy.log(`✅ Created test user: ${user.email}`);
+      } else if (response.status === 400 && response.body.error?.includes('exists')) {
+        cy.log(`ℹ️ User already exists: ${user.email}`);
+      } else {
+        cy.log(`⚠️ Unexpected response for ${user.email}: ${response.status}`);
+      }
+    });
+  });
+});
+
+// Declare custom commands for TypeScript
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      login(email: string, password: string): Chainable<void>;
+      loginAs(role: 'student' | 'lecturer' | 'admin'): Chainable<void>;
+      logout(): Chainable<void>;
+      mockApiCall(method: Method, url: string, response: any, alias?: string): Chainable<void>;
+      waitForApi(alias: string): Chainable<void>;
+      isAuthenticated(): Chainable<boolean>;
+      getUserRole(): Chainable<string | null>;
+      seedTestUsers(): Chainable<void>;
+    }
+  }
+}

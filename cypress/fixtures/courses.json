@@ -1,0 +1,59 @@
+{
+  "courses": [
+    {
+      "id": 1,
+      "code": "CS101",
+      "title": "Introduction to Computer Science",
+      "description": "Learn the fundamentals of computer science",
+      "lecturer_name": "Dr. John Smith",
+      "credits": 3,
+      "status": "active"
+    },
+    {
+      "id": 2,
+      "code": "WEB201",
+      "title": "Web Development",
+      "description": "Build modern web applications",
+      "lecturer_name": "Prof. Jane Doe",
+      "credits": 4,
+      "status": "active"
+    },
+    {
+      "id": 3,
+      "code": "DATA301",
+      "title": "Data Structures & Algorithms",
+      "description": "Master data structures and algorithms",
+      "lecturer_name": "Dr. Alice Johnson",
+      "credits": 4,
+      "status": "active"
+    }
+  ],
+  "enrollments": [
+    {
+      "id": 1,
+      "course_id": 1,
+      "student_id": 1,
+      "status": "active"
+    }
+  ],
+  "users": {
+    "student": {
+      "id": 1,
+      "email": "student@test.com",
+      "name": "Test Student",
+      "role": "student"
+    },
+    "lecturer": {
+      "id": 2,
+      "email": "lecturer@test.com",
+      "name": "Test Lecturer",
+      "role": "lecturer"
+    },
+    "admin": {
+      "id": 3,
+      "email": "admin@test.com",
+      "name": "Test Admin",
+      "role": "admin"
+    }
+  }
+}
