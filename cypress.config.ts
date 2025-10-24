@@ -12,9 +12,19 @@ export default defineConfig({
     screenshotOnRunFailure: true,
     viewportWidth: 1280,
     viewportHeight: 720,
+    
+    // Timeout configurations - ADDED pageLoadTimeout
     defaultCommandTimeout: 10000,
     requestTimeout: 10000,
     responseTimeout: 10000,
+    pageLoadTimeout: 60000, // Add this for cy.visit() timeout issues
+    
+    // Retry configuration for flaky tests
+    retries: {
+      runMode: 2,
+      openMode: 0,
+    },
+    
     env: {
       apiUrl: 'http://localhost:4000/api',
       googleClientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID

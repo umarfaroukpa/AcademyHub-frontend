@@ -1,12 +1,10 @@
+/// <reference types="cypress" />
+import { setupDashboard } from '../support/dashbaord-helpers';
+
 describe('Student Dashboard Tests', () => {
   beforeEach(() => {
-    // Handle any uncaught exceptions
-    cy.on('uncaught:exception', (err) => {
-      if (err.message.includes('Failed to load chunk')) {
-        return false;
-      }
-      return true;
-    });
+    // Setup dashboard with mocks
+    setupDashboard('student');
 
     // Login as student before each test
     cy.loginAs('student');
