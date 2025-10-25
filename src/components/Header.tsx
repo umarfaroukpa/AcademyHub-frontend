@@ -133,14 +133,14 @@ export default function DynamicHeader() {
 
   return (
     <header 
-      className="sticky cursor-pointer top-0 z-50 shadow-lg relative overflow-hidden"
+      className="sticky cursor-pointer top-0 z-50 shadow-lg isolate"
       style={{
         background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
       }}
     >
       {/* Background Pattern Overlay - reduced opacity */}
       <div 
-        className="absolute inset-0 opacity-15"
+        className="absolute inset-0 opacity-15 pointer-events-none"
         style={{
           backgroundImage: 'url(/52911715-new.jpg)',
           backgroundSize: 'cover',
@@ -151,18 +151,18 @@ export default function DynamicHeader() {
       
       {/* Gradient Overlay - increased opacity for better containment */}
       <div 
-        className="absolute inset-0"
+        className="absolute inset-0 pointer-events-none"
         style={{
           background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.97) 50%, rgba(240, 147, 251, 0.95) 100%)',
         }}
       />
 
       {/* Bottom border to create clear separation */}
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-white/30"></div>
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-white/30 pointer-events-none"></div>
 
       {/* Decorative Blobs */}
-      <div className="absolute top-0 left-0 w-64 h-64 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-blob" />
-      <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-300 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-blob animation-delay-2000" />
+      <div className="absolute top-0 left-0 w-64 h-64 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-blob pointer-events-none" />
+      <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-300 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-blob animation-delay-2000 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="flex justify-between items-center h-16 px-4 sm:px-6 lg:px-8">
