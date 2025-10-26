@@ -128,12 +128,12 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section with Carousel */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-purple-600 via-purple-800 to-pink-600">
+      <section className="relative overflow-hidden ">
         {/* Background Pattern Overlay */}
-        <div className="absolute inset-0 bg-[url('/26265399.jpg')] bg-cover bg-center opacity-5" />
+        <div className="absolute inset-0 bg-[url('/26265399.jpg')] bg-cover bg-center opacity-0" />
         
         {/* Additional Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-600/85 via-purple-800/90 to-pink-600/85" />
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-600/85 via-purple-800/90 to-pink-600/85 opacity-0" />
 
         {/* Content */}
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8">

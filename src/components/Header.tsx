@@ -120,8 +120,18 @@ export default function DynamicHeader() {
 
   const isAuthPage = pathname === '/login' || pathname === '/signup';
   
-  if (isAuthPage || isLoading) {
+  // CRITICAL FIX: Instead of returning null, return a placeholder with same height
+  if (isAuthPage) {
     return null;
+  }
+
+  if (isLoading) {
+    // Return invisible header with same dimensions to prevent layout shift
+    return (
+      <header className="sticky top-0 z-50 h-16 opacity-0 pointer-events-none">
+        <div className="h-16" />
+      </header>
+    );
   }
 
   const displayUser = user || { 
@@ -138,7 +148,7 @@ export default function DynamicHeader() {
         background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
       }}
     >
-      {/* Background Pattern Overlay - reduced opacity */}
+      {/* Background Pattern Overlay */}
       <div 
         className="absolute inset-0 opacity-15 pointer-events-none"
         style={{
@@ -149,7 +159,7 @@ export default function DynamicHeader() {
         }}
       />
       
-      {/* Gradient Overlay - increased opacity for better containment */}
+      {/* Gradient Overlay */}
       <div 
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -157,7 +167,7 @@ export default function DynamicHeader() {
         }}
       />
 
-      {/* Bottom border to create clear separation */}
+      {/* Bottom border */}
       <div className="absolute bottom-0 left-0 right-0 h-px bg-white/30 pointer-events-none"></div>
 
       {/* Decorative Blobs */}
