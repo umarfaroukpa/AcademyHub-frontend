@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { BookOpen, Users, GraduationCap, Calendar, FileText, TrendingUp, Award, ChevronLeft, ChevronRight, Search, Music, MessageSquare, Trophy, Gamepad2 } from 'lucide-react';
+import Image from 'next/image';
+import { BookOpen, Users, GraduationCap, Calendar, FileText, TrendingUp, Award, ChevronLeft, ChevronRight, Music, Trophy, Gamepad2 } from 'lucide-react';
 
 export default function LandingPage() {
   const [isMounted, setIsMounted] = useState(false);
@@ -104,18 +105,6 @@ export default function LandingPage() {
     { label: 'Expert Lecturers', value: '200+', icon: GraduationCap },
     { label: 'Success Rate', value: '95%', icon: Award }
   ];
-
-  const getColorClasses = (color: string) => {
-    const colors: Record<string, string> = {
-      blue: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
-      purple: 'bg-purple-500/10 text-purple-600 border-purple-500/20',
-      indigo: 'bg-indigo-500/10 text-indigo-600 border-indigo-500/20',
-      pink: 'bg-pink-500/10 text-pink-600 border-pink-500/20',
-      green: 'bg-green-500/10 text-green-600 border-green-500/20',
-      orange: 'bg-orange-500/10 text-orange-600 border-orange-500/20'
-    };
-    return colors[color] || colors.blue;
-  };
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
@@ -412,10 +401,12 @@ export default function LandingPage() {
             {/* Event Card 1 */}
             <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all">
               <div className="h-48 bg-gradient-to-br from-orange-400 to-pink-500 relative overflow-hidden">
-                <img 
+                <Image
                   src="/key-note-removebg-preview.png" 
                   alt="Conference Event"
                   className="w-full h-full object-cover"
+                  width={500}
+                  height={300}
                 />
               </div>
               <div className="p-6">
@@ -434,10 +425,12 @@ export default function LandingPage() {
             {/* Event Card 2 */}
             <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all">
               <div className="h-48 bg-gradient-to-br from-purple-500 to-pink-500 relative overflow-hidden">
-                <img 
+                <Image 
                   src="/incrememntal-sales-removebg-preview.png" 
                   alt="Marketing Event"
                   className="w-full h-full object-cover"
+                  width={500}
+                  height={300}
                 />
               </div>
               <div className="p-6">
@@ -456,10 +449,12 @@ export default function LandingPage() {
             {/* Event Card 3 */}
             <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all">
               <div className="h-48 bg-gradient-to-br from-blue-400 to-indigo-500 relative overflow-hidden">
-                <img 
+                <Image 
                   src="/smarter-removebg-preview.png" 
                   alt="Workspace Event"
                   className="w-full h-full object-cover"
+                  width={500}
+                  height={300}
                 />
               </div>
               <div className="p-6">
@@ -498,10 +493,12 @@ export default function LandingPage() {
             {/* Review Card 1 */}
             <div className="bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all">
               <div className="flex items-center mb-4">
-                <img 
+                <Image 
                   src="/00-1-removebg-preview.png" 
                   alt="Taylor Swift"
                   className="w-12 h-12 rounded-full mr-3"
+                  width={500}
+                  height={300}
                 />
                 <div>
                   <h4 className="font-bold text-gray-900">— Ayesha Khan, BBA Student</h4>
@@ -513,17 +510,19 @@ export default function LandingPage() {
                 </div>
               </div>
               <p className="text-sm text-gray-700">
-                "The university’s management is well-organized and responsive. Every process—from admissions to exams—runs smoothly!"
+                &quot;The university’s management is well-organized and responsive. Every process—from admissions to exams—runs smoothly!&quot;
               </p>
             </div>
 
             {/* Review Card 2 */}
             <div className="bg-gradient-to-br from-yellow-100 to-orange-100 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all">
               <div className="flex items-center mb-4">
-                <img 
+                <Image 
                   src="/00-2-removebg-preview.png" 
                   alt="Taylor Swift"
                   className="w-12 h-12 rounded-full mr-3"
+                  width={500}
+                  height={300}
                 />
                 <div>
                   <h4 className="font-bold text-gray-900">— Ravi Patel, Engineering Student</h4>
@@ -535,17 +534,19 @@ export default function LandingPage() {
                 </div>
               </div>
               <p className="text-sm text-gray-700">
-                "Efficient administration and supportive staff make campus life so much easier. Truly professional management!"
+                &quot;Efficient administration and supportive staff make campus life so much easier. Truly professional management!&quot;
               </p>
             </div>
 
             {/* Review Card 3 */}
             <div className="bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all">
               <div className="flex items-center mb-4">
-                <img 
-                  src="/00-3-removebg-preview.png" 
+                <Image
+                  src="/00-3-removebg-preview.png"
                   alt="Taylor Swift"
                   className="w-12 h-12 rounded-full mr-3"
+                  width={500}
+                  height={300}
                 />
                 <div>
                   <h4 className="font-bold text-gray-900">— Emily Johnson, Faculty Member</h4>
@@ -557,17 +558,19 @@ export default function LandingPage() {
                 </div>
               </div>
               <p className="text-sm text-gray-700">
-                "Great leadership and transparency in operations. The management genuinely cares about students’ growth."
+                &quot;Great leadership and transparency in operations. The management genuinely cares about students growth.&quot;   
               </p>
             </div>
 
             {/* Review Card 4 */}
             <div className="bg-gradient-to-br from-pink-100 to-purple-100 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all">
               <div className="flex items-center mb-4">
-                <img 
-                  src="/00-4-removebg-preview.png" 
+                <Image
+                  src="/00-4-removebg-preview.png"
                   alt="Taylor Swift"
                   className="w-12 h-12 rounded-full mr-3"
+                  width={500}
+                  height={300}
                 />
                 <div>
                   <h4 className="font-bold text-gray-900">Mohammed Al-Rashid, MBA Student</h4>
@@ -579,17 +582,19 @@ export default function LandingPage() {
                 </div>
               </div>
               <p className="text-sm text-gray-700">
-                "I appreciate how quickly the management addresses issues and introduces new initiatives for student welfare."
+                &quot;I appreciate how quickly the management addresses issues and introduces new initiatives for student welfare.&quot;
               </p>
             </div>
 
              {/* Review Card 5 */}
             <div className="bg-gradient-to-br from-pink-100 to-purple-100 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all">
               <div className="flex items-center mb-4">
-                <img 
+                <Image
                   src="/00-5-removebg-preview.png" 
                   alt="Taylor Swift"
                   className="w-12 h-12 rounded-full mr-3"
+                  width={500}
+                  height={300}
                 />
                 <div>
                   <h4 className="font-bold text-gray-900">jhone, International Student</h4>
@@ -601,17 +606,19 @@ export default function LandingPage() {
                 </div>
               </div>
               <p className="text-sm text-gray-700">
-                "Excellent coordination between departments. The management ensures academic and extracurricular balance."
+                &quot;Excellent coordination between departments. The management ensures academic and extracurricular balance.&quot;
               </p>
             </div>
 
              {/* Review Card 6 */}
             <div className="bg-gradient-to-br from-pink-100 to-purple-100 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all">
               <div className="flex items-center mb-4">
-                <img 
-                  src="/00-6-removebg-preview.png" 
+                <Image
+                  src="/00-6-removebg-preview.png"
                   alt="Taylor Swift"
                   className="w-12 h-12 rounded-full mr-3"
+                  width={500}
+                  height={300}
                 />
                 <div>
                   <h4 className="font-bold text-gray-900">Peter Thompson, Alumni (Class of 2022)</h4>
@@ -623,7 +630,7 @@ export default function LandingPage() {
                 </div>
               </div>
               <p className="text-sm text-gray-700">
-                "Professional, proactive, and student-friendly management. They’ve made university life organized and efficient."
+                &quot;Professional, proactive, and student-friendly management. They’ve made university life organized and efficient.&quot;
               </p>
             </div>
           </div>          

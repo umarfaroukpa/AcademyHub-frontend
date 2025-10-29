@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../../lib/api';
+import type { AxiosError } from 'axios';
 import { Users, Clock, Video, MessageSquare, Plus, Calendar, CheckCircle, XCircle, AlertCircle, Search, Filter } from 'lucide-react';
 
 interface StudyGroup {
@@ -42,11 +43,12 @@ export default function StudyGroups() {
     try {
       const response = await api.get<StudyGroup[]>('/study-groups');
       setStudyGroups(response.data);
-    } catch (error: any) {
-      console.error('Failed to fetch study groups:', error);
+    } catch (error: unknown) {
+      const axiosError = error as { message?: string, response?: { data?: AxiosError, status?: number } };
+      console.error('Failed to fetch study groups:', axiosError);
       setAlert({
         type: 'error',
-        message: 'Failed to load study groups'
+        message: axiosError.response?.data?.message || 'Failed to load study groups'
       });
       setTimeout(() => setAlert(null), 4000);
     } finally {
@@ -76,11 +78,11 @@ export default function StudyGroups() {
       }
       
       setTimeout(() => setAlert(null), 6000);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Failed to join study group:', error);
       setAlert({
         type: 'error',
-        message: error.response?.data?.error || 'Failed to join study group'
+        message: ((error as AxiosError).response?.data as { message?: string })?.message || 'Failed to join study group'
       });
       setTimeout(() => setAlert(null), 4000);
     } finally {

@@ -56,7 +56,7 @@ class ErrorBoundary extends Component<Props, State> {
     // Example: Send to external logging service
     try {
       // Uncomment and configure for your logging service
-      /*
+      
       if (typeof window !== 'undefined') {
         // Sentry example
         // Sentry.captureException(error, { extra: errorInfo });
@@ -83,7 +83,7 @@ class ErrorBoundary extends Component<Props, State> {
           }),
         }).catch(console.error);
       }
-      */
+      
     } catch (loggingError) {
       console.error('Failed to log error:', loggingError);
     }
@@ -239,7 +239,7 @@ class ErrorBoundary extends Component<Props, State> {
             {/* Footer */}
             <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
               <p className="text-xs text-gray-500 text-center">
-                Error ID: {Date.now()} • If this problem persists, please contact support
+                Error ID: {Date.now()}  If this problem persists, please contact support
               </p>
             </div>
           </div>

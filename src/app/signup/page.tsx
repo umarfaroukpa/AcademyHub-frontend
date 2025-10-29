@@ -6,14 +6,43 @@ import Link from 'next/link';
 import api, { setAuthToken } from '../../../lib/api';
 import { GraduationCap, Lock, Crown } from 'lucide-react';
 import GoogleSignInWithRole from '../../components/GoogleSignInWithRole';
+import type { AxiosError } from 'axios';
+
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: 'student' | 'lecturer' | 'admin';
+  is_active?: boolean;
+}
 
 interface SignupResponse {
   token: string;
-  user: any;
+  user: User;
 }
 
 interface ValidationErrors {
   [key: string]: string;
+}
+
+// Interface for the error data structure returned by the API
+interface ApiErrorData {
+    error?: string; // For general errors
+    errors?: Array<{ path: string; msg: string }>; // For validation errors
+}
+
+interface SignupPayload {
+  name: string;
+  email: string;
+  password: string;
+  role: 'student' | 'lecturer' | 'admin';
+  developerCode?: string;
+}
+
+interface ApiErrorData {
+  error?: string; 
+  errors?: Array<{ path: string; msg: string }>; 
 }
 
 export default function SignupPage() {
@@ -34,7 +63,8 @@ export default function SignupPage() {
 
   // Developer access configuration
   const DEVELOPER_CONFIG = {
-    secretCode: 'ADMIN_ACCESS_2024', // Must match backend
+    // Must match backend
+    secretCode: 'ADMIN_ACCESS_2024',
     allowedEmails: ['yasmarfaq@yahoo.com', 'yasmarfaq51@gmail.com',]
   };
 
@@ -93,7 +123,7 @@ export default function SignupPage() {
   const enableDeveloperMode = () => {
     if (secretCode === DEVELOPER_CONFIG.secretCode) {
       setDeveloperMode(true);
-      setErrors(prev => ({ ...prev, role: '' }));
+      setErrors(prev => ({ ...prev, role: '', general: '' })); // Clear previous general error
     } else {
       setErrors(prev => ({ 
         ...prev, 
@@ -123,7 +153,7 @@ export default function SignupPage() {
     setIsLoading(true);
 
     try {
-      const payload: any = {
+      const payload: SignupPayload = {
         name: formData.name.trim(),
         email: formData.email.toLowerCase(),
         password: formData.password,
@@ -157,23 +187,38 @@ export default function SignupPage() {
         router.push('/dashboard');
       }, 100);
       
-    } catch (error: any) {
+    // AxiosError for type-safety
+    } catch (error: unknown) {
       console.error('🔴 Signup failed:', error);
+
+      // Cast the error to AxiosError to access response data
+      const axiosError = error as AxiosError<ApiErrorData>;
       
       // Handle different error responses
-      if (error.response?.data?.error) {
+      if (axiosError.response?.data) {
+        const data = axiosError.response.data;
+        if (data.error) {
+          setErrors({ 
+            general: data.error 
+          });
+        } else if (data.errors) {
+          const serverErrors: ValidationErrors = {};
+          data.errors.forEach((err) => {
+        serverErrors[err.path] = err.msg;
+ });
+          setErrors(serverErrors);
+        } else {
+          setErrors({ 
+            general: 'Signup failed: Unknown server response. Please try again.' 
+          });
+        }
+      } else if (axiosError.message) {
         setErrors({ 
-          general: error.response.data.error 
+          general: `Signup failed: ${axiosError.message}` 
         });
-      } else if (error.response?.data?.errors) {
-        const serverErrors: ValidationErrors = {};
-        error.response.data.errors.forEach((err: any) => {
-          serverErrors[err.path] = err.msg;
-        });
-        setErrors(serverErrors);
       } else {
         setErrors({ 
-          general: 'Signup failed. Please try again.' 
+          general: 'Signup failed. Please check your connection and try again.' 
         });
       }
     } finally {
@@ -181,7 +226,7 @@ export default function SignupPage() {
     }
   };
 
-  const handleGoogleSuccess = (data: any) => {
+  const handleGoogleSuccess = (data: SignupResponse) => {
     console.log('✅ Google signup successful:', data);
     
     const { token, user } = data;
@@ -312,6 +357,9 @@ export default function SignupPage() {
                     Unlock
                   </button>
                 </div>
+                {errors.general && errors.general.includes('developer access code') && (
+                    <p className="text-red-500 text-xs mt-1">{errors.general}</p>
+                )}
               </div>
             )}
 
@@ -378,7 +426,6 @@ export default function SignupPage() {
                     formData.role === 'admin' && !developerMode ? 'opacity-50 cursor-not-allowed' : ''
                   }`}
                   required
-                  disabled={formData.role === 'admin' && !developerMode}
                 >
                   <option value="student">Student</option>
                   <option value="lecturer">Lecturer</option>

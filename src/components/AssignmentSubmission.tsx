@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import api from '../../lib/api';
 import { Upload, FileText, Calendar, CheckCircle, Clock, AlertCircle } from 'lucide-react';
+import { AxiosError } from 'axios';
 
 interface Assignment {
   id: number;
@@ -75,8 +76,12 @@ export default function AssignmentSubmission() {
       setSubmissionText('');
       setSelectedFile(null);
       alert('Assignment submitted successfully!');
-    } catch (error: any) {
-      alert(error.response?.data?.error || 'Failed to submit assignment');
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        alert(error.response?.data?.error || 'Failed to submit assignment');
+      } else {
+        alert('Failed to submit assignment');
+      }
     }
   };
 

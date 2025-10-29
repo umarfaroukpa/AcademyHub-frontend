@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import api from '../../lib/api';
-import { Plus, Edit, Trash2, Upload, FileText, Calendar, Users } from 'lucide-react';
+import { Plus, Edit, Trash2, FileText, Calendar, Users } from 'lucide-react';
+import { AxiosError } from 'axios';
 
 interface Assignment {
   id: number;
@@ -70,8 +71,12 @@ export default function AssignmentManagement() {
       setShowCreateForm(false);
       (e.target as HTMLFormElement).reset();
       alert('Assignment created successfully!');
-    } catch (error: any) {
-      alert(error.response?.data?.error || 'Failed to create assignment');
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        alert(error.response?.data?.error || 'Failed to create assignment');
+      } else {
+        alert('Failed to create assignment');
+      }
     }
   };
 
@@ -93,8 +98,12 @@ export default function AssignmentManagement() {
       await fetchAssignments();
       setEditingAssignment(null);
       alert('Assignment updated successfully!');
-    } catch (error: any) {
-      alert(error.response?.data?.error || 'Failed to update assignment');
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        alert(error.response?.data?.error || 'Failed to update assignment');
+      } else {
+        alert('Failed to update assignment');
+      }
     }
   };
 
@@ -105,8 +114,12 @@ export default function AssignmentManagement() {
       await api.delete(`/assignments/${assignmentId}`);
       await fetchAssignments();
       alert('Assignment deleted successfully!');
-    } catch (error: any) {
-      alert(error.response?.data?.error || 'Failed to delete assignment');
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        alert(error.response?.data?.error || 'Failed to delete assignment');
+      } else {
+        alert('Failed to delete assignment');
+      }
     }
   };
 

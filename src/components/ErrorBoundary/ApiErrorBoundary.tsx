@@ -94,7 +94,7 @@ class ApiErrorBoundary extends Component<Props, State> {
                 Connection Problem
               </h3>
               <p className="text-gray-600 mb-6">
-                We couldn't connect to the server. Please check your internet connection.
+                We could not connect to the server. Please check your internet connection.
               </p>
               <button
                 onClick={this.handleRetry}

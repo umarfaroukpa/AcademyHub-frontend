@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Router from 'next/router';
 import API, { setAuthToken } from '../../lib/api';
 
@@ -9,7 +9,7 @@ const [password, setPassword] = useState('');
 const [error, setError] = useState('');
 
 
-async function submit(e: any) {
+async function submit(e: React.FormEvent) {
 e.preventDefault();
 try {
 const res = await API.post('/api/auth/login', { email, password });
@@ -17,8 +17,14 @@ const { token } = (res.data as { token: string });
 localStorage.setItem('token', token);
 setAuthToken(token);
 Router.push('/courses');
-} catch (err: any) {
-setError(err?.response?.data?.error || 'Login failed');
+} catch (err: unknown) {
+  if (typeof err === 'object' && err !== null && 'response' in err) {
+	const errorMsg =
+	  (err as { response?: { data?: { error?: string } } }).response?.data?.error || 'Login failed';
+	setError(errorMsg);
+  } else {
+	setError('Login failed');
+  }
 }
 }
 

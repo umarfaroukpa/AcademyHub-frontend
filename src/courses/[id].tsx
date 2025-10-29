@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Router, { useRouter } from 'next/router';
 import API, { setAuthToken } from '../../lib/api';
 
@@ -19,20 +19,19 @@ const [title, setTitle] = useState('');
 const [code, setCode] = useState('');
 const [description, setDescription] = useState('');
 
+const fetchCourse = useCallback(async () => { 
+    const res = await API.get(`/api/courses/${id}`);
+    setCourse(res.data as Course);
+    setTitle((res.data as Course).title);
+    setCode((res.data as Course).code);
+    setDescription((res.data as Course).description);
+}, [id]);
+
 useEffect(() => {
 const t = localStorage.getItem('token');
 setAuthToken(t || undefined);
 if (id && id !== 'new') fetchCourse();
-}, [id]);
-
-
-async function fetchCourse() {
-const res = await API.get(`/api/courses/${id}`);
-setCourse(res.data as Course);
-setTitle((res.data as Course).title);
-setCode((res.data as Course).code);
-setDescription((res.data as Course).description);
-}
+}, [id, fetchCourse]);
 
 
 async function save() {

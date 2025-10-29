@@ -5,7 +5,7 @@ export interface ErrorLog {
   url: string;
   userAgent: string;
   userId?: string | number;
-  additionalData?: Record<string, any>;
+  additionalData?: Record<string, unknown>;
 }
 
 export class ErrorLogger {
@@ -39,7 +39,7 @@ export class ErrorLogger {
     this.logError(event.error, { type: 'globalError' });
   };
 
-  logError(error: Error | string, additionalData?: Record<string, any>): void {
+  logError(error: Error | string, additionalData?: Record<string, unknown>): void {
     const errorLog: ErrorLog = {
       message: typeof error === 'string' ? error : error.message,
       stack: typeof error === 'object' ? error.stack : undefined,
@@ -57,7 +57,7 @@ export class ErrorLogger {
           const userData = JSON.parse(user);
           errorLog.userId = userData.id;
         }
-      } catch (e) {
+      } catch {
         // Ignore parsing errors
       }
     }
@@ -98,6 +98,6 @@ if (typeof window !== 'undefined') {
   ErrorLogger.getInstance();
 }
 
-export const logError = (error: Error | string, additionalData?: Record<string, any>) => {
+export const logError = (error: Error | string, additionalData?: Record<string, unknown>) => {
   ErrorLogger.getInstance().logError(error, additionalData);
 };

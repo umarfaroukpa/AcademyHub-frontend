@@ -66,7 +66,7 @@ class ChunkErrorBoundary extends Component<Props, State> {
               Update Available
             </h3>
             <p className="text-gray-600 mb-6">
-              We've released a new version. Please reload the page to get the latest updates.
+              We&apos;ve released a new version. Please reload the page to get the latest updates.
             </p>
             <button
               onClick={this.handleReload}

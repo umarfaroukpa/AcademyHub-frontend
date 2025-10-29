@@ -96,12 +96,12 @@ export function setAuthToken(token?: string): void {
     localStorage.setItem('token', token);
     // Ensure headers object exists before setting authorization
     api.defaults.headers.common = api.defaults.headers.common || {};
-    (api.defaults.headers.common as any).Authorization = `Bearer ${token}`;
+    (api.defaults.headers.common as Record<string, string>).Authorization = `Bearer ${token}`;
     console.log('🔑 Token set in localStorage and axios defaults');
   } else {
     localStorage.removeItem('token');
     if (api.defaults.headers.common) {
-      delete (api.defaults.headers.common as any).Authorization;
+      delete (api.defaults.headers.common as Record<string, string>).Authorization;
     }
     console.log('🔑 Token cleared from localStorage and axios defaults');
   }

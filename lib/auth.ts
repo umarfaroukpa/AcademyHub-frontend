@@ -4,7 +4,7 @@
  * Save user data and token to localStorage and notify all components
  * This triggers the header to update immediately without refresh
  */
-export const saveUserAndNotify = (user: any, token: string) => {
+export const saveUserAndNotify = (user: unknown, token: string) => {
   localStorage.setItem('user', JSON.stringify(user));
   localStorage.setItem('token', token);
   

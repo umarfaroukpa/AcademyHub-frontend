@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../../lib/api';
-import { FileText, Download, CheckCircle, Clock, User, BookOpen } from 'lucide-react';
+import { FileText, Download, CheckCircle, User, BookOpen } from 'lucide-react';
 
 interface Submission {
   id: number;
@@ -54,8 +54,9 @@ export default function SubmissionGrading() {
       setGrade('');
       setFeedback('');
       alert('Grade submitted successfully!');
-    } catch (error: any) {
-      alert(error.response?.data?.error || 'Failed to submit grade');
+    } catch (error: unknown) {
+      const axiosError = error as { message?: string, response?: { data?: { error?: string }, status?: number } };
+      alert(axiosError.response?.data?.error || 'Failed to submit grade');
     }
   };
 

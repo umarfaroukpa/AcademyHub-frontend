@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Course } from '../../types/types';
 import api from '../../lib/api';
+import type { AxiosError } from 'axios';
 import AssignmentSubmission from '../components/AssignmentSubmission';
 import StudyGroups from '../components/Study-Gruops';
 import { BookOpen, Sparkles, CheckCircle, Clock, XCircle, Search, GraduationCap, AlertCircle, FileText, LayoutDashboard, Users } from 'lucide-react';
@@ -43,12 +44,12 @@ export default function StudentDashboard() {
       const response = await api.get<Course[]>('/courses');
       console.log('✅ Courses fetched:', response.data);
       setCourses(response.data);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('❌ Failed to fetch courses:', error);
       console.error('Error details:', {
-        message: error.message,
-        response: error.response?.data,
-        status: error.response?.status
+        message: (error as AxiosError).message,
+        response: (error as AxiosError).response?.data,
+        status: (error as AxiosError).response?.status
       });
       setError('Failed to load courses. Please try again.');
       setTimeout(() => setError(null), 3000);
@@ -61,12 +62,12 @@ export default function StudentDashboard() {
       const response = await api.get<EnrollmentResponse[]>('/enrollments');
       console.log('✅ Enrollments fetched:', response.data);
       setEnrollments(response.data);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('❌ Failed to fetch enrollments:', error);
       console.error('Error details:', {
-        message: error.message,
-        response: error.response?.data,
-        status: error.response?.status
+        message: (error as AxiosError).message,
+        response: (error as AxiosError).response?.data,
+        status: (error as AxiosError).response?.status
       });
     }
   };
@@ -90,17 +91,27 @@ export default function StudentDashboard() {
       await api.post(`/courses/${courseId}/enroll`);
       console.log('✅ Enrollment successful');
       await Promise.all([fetchCourses(), fetchEnrollments()]);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('❌ Enrollment failed:', error);
-      
-      if (error.response?.status === 400) {
-        setError(error.response.data.error || 'You are already enrolled in this course!');
-      } else if (error.response?.status === 404) {
-        setError('Course not found');
+
+      if (error && typeof error === 'object' && 'response' in error) {
+        const axiosError = error as AxiosError;
+        if (axiosError.response?.status === 400) {
+          setError(
+            (axiosError.response?.data && typeof axiosError.response.data === 'object' && 'error' in axiosError.response.data
+              ? (axiosError.response.data as { error?: string }).error
+              : undefined
+            ) || 'You are already enrolled in this course!'
+          );
+        } else if (axiosError.response?.status === 404) {
+          setError('Course not found');
+        } else {
+          setError('Enrollment failed. Please try again.');
+        }
       } else {
         setError('Enrollment failed. Please try again.');
       }
-      
+
       setTimeout(() => setError(null), 3000);
     } finally {
       setLoading(null);
@@ -122,8 +133,14 @@ export default function StudentDashboard() {
       const response = await api.post<RecommendedCourse[]>('/ai/recommend', { interests });
       console.log('✅ Recommendations received:', response.data);
       setRecommendedCourses(response.data);
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const axiosError = error as { message?: string, response?: { data?: unknown, status?: number } };
       console.error('❌ Failed to get recommendations:', error);
+      console.error('Error details:', {
+        message: axiosError.message,
+        response: axiosError.response?.data,
+        status: axiosError.response?.status
+    });
       setError('Failed to get recommendations. Please try again.');
       setTimeout(() => setError(null), 3000);
     } finally {
@@ -230,7 +247,7 @@ export default function StudentDashboard() {
               </div>
               <div className="flex-1">
                 <h2 className="text-xl font-semibold text-gray-900 mb-2">AI Course Recommendations</h2>
-                <p className="text-gray-600 mb-4">Tell us what you're interested in and we'll suggest the perfect courses</p>
+                <p className="text-gray-600 mb-4">Tell us what &#39;you&apos;re interested in and we&apos;ll suggest the perfect courses</p>
                 <div className="flex gap-3">
                   <input
                     type="text"
@@ -259,7 +276,7 @@ export default function StudentDashboard() {
             {/* Display Recommended Courses */}
             {recommendedCourses.length > 0 && (
               <div className="mt-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Recommended Courses for "{interests}"</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Recommended Courses for &quot;{interests}&quot;</h3>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {recommendedCourses.map(course => {
                     const isEnrolled = isCourseEnrolled(course.id);

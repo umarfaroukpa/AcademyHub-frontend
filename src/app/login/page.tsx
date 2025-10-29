@@ -9,7 +9,18 @@ import GoogleSignInWithRole from '../../components/GoogleSignInWithRole';
 
 interface LoginResponse {
   token: string;
-  user: any; 
+  user: User; 
+}
+
+interface User {
+  id: string;
+  email: string;
+  role: 'student' | 'lecturer' | 'admin';
+}
+
+interface GoogleAuthData {
+  token: string;
+  user: User; 
 }
 
 export default function LoginPage() {
@@ -48,16 +59,16 @@ export default function LoginPage() {
         router.push('/dashboard');
       }, 100);
       
-    } catch (error: any) {
+    } catch (error) {
       console.error('🔴 Login failed:', error);
-      const errorMessage = error.response?.data?.error || 'Login failed. Please try again.';
+      const errorMessage = (error as { response?: { data?: { error: string } } }).response?.data?.error || 'Login failed. Please try again.';
       setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleGoogleSuccess = (data: any) => {
+  const handleGoogleSuccess = (data: GoogleAuthData) => {
     console.log('✅ Google login successful:', data);
     
     const { token, user } = data;
@@ -80,9 +91,9 @@ export default function LoginPage() {
     setEmail(testEmail);
     setPassword(testPassword);
     
-    // Use the actual login function instead of simulating form submission
+    // Using the actual login function
     setTimeout(async () => {
-      await handleLogin(new Event('submit') as any);
+      await handleLogin(new Event('submit') as unknown as React.FormEvent);
     }, 0);
   };
 
@@ -276,9 +287,9 @@ export default function LoginPage() {
             </div>
 
             <p className="text-center text-sm text-gray-600 mt-6">
-              Haven't an Account?{' '}
-              <Link 
-                href="/signup" 
+              Haven&apos;t an Account?{' '}
+              <Link
+                href="/signup"
                 className="text-purple-600 hover:text-purple-700 font-semibold"
                 data-testid="signup-link"
               >

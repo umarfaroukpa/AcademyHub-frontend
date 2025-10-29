@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../../lib/api';
+import axios from 'axios';
 import AssignmentManagement from '../components/AssignmentManagement';
 import SubmissionGrading from '../components/SubmissionGrading';
 import { BookOpen, Plus, Upload, Sparkles, FileText, Download, LayoutDashboard, Users, CheckCircle } from 'lucide-react';
@@ -81,17 +82,25 @@ export default function LecturerDashboard() {
       setShowCreateForm(false);
       (e.target as HTMLFormElement).reset();
       alert('Course created successfully!');
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('❌ Error creating course:', error);
-      console.error('Error response:', error.response?.data);
       
-      const errorMessage = error.response?.data?.error || 
-                          error.response?.data?.message || 
-                          error.message || 
-                          'Unknown error occurred';
+      let errorMessage = 'Unknown error occurred';
+      
+      if (axios.isAxiosError(error)) {
+        console.error('Error response:', error.response?.data);
+        errorMessage = error.response?.data?.error ||
+                      error.response?.data?.message ||
+                      error.message;
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      }
+      
       alert(`Failed to create course: ${errorMessage}`);
     }
-  };
+  }
 
   const uploadSyllabus = async (courseId: number, file: File) => {
     try {
@@ -131,7 +140,7 @@ export default function LecturerDashboard() {
     }
   };
 
-  const useGeneratedSyllabus = (courseId: number) => {
+  const handleUseGeneratedSyllabus = (courseId: number) => {
     if (!generatedSyllabus) return;
     console.log('Using generated syllabus for course:', courseId, generatedSyllabus);
     alert(`Generated syllabus content for "${generatedSyllabus.title}" is ready to be used for this course! Check console for details.`);
@@ -507,7 +516,7 @@ ${assess.type} (${assess.weight}%): ${assess.description}
                   <div className="bg-purple-50 border border-purple-200 rounded-xl p-4">
                     <div className="flex items-center justify-between">
                       <p className="text-purple-700 text-sm">
-                        <strong>Tip:</strong> You have a generated syllabus for "{generatedSyllabus.title.replace('Syllabus for ', '')}"
+                        <strong>Tip:</strong> You have a generated syllabus for &quot;{generatedSyllabus.title.replace('Syllabus for ', '')}&quot;
                       </p>
                       <button
                         type="button"
@@ -580,7 +589,7 @@ ${assess.type} (${assess.weight}%): ${assess.description}
                           </h4>
                           {generatedSyllabus && (
                             <button
-                              onClick={() => useGeneratedSyllabus(course.id)}
+                              onClick={() => handleUseGeneratedSyllabus(course.id)}
                               className="text-sm bg-purple-600 text-white px-3 py-1 rounded-lg hover:bg-purple-700 transition-colors"
                             >
                               Use Generated Syllabus

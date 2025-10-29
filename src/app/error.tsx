@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Error({
   error,
@@ -46,13 +47,13 @@ export default function Error({
               <RefreshCw className="w-4 h-4" />
               Try Again
             </button>
-            <a
+            <Link
               href="/"
               className="flex items-center gap-2 px-6 py-3 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
             >
               <Home className="w-4 h-4" />
               Go Home
-            </a>
+            </Link>
           </div>
         </div>
       </div>
