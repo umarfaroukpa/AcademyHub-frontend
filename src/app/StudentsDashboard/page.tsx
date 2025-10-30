@@ -1,9 +1,11 @@
+'use client';
+
 import { useState, useEffect } from 'react';
-import { Course } from '../../types/types';
-import api from '../../lib/api';
+import { Course } from '../../../types/types';
+import api from '../../../lib/api';
 import type { AxiosError } from 'axios';
-import AssignmentSubmission from '../components/AssignmentSubmission';
-import StudyGroups from '../components/Study-Gruops';
+import AssignmentSubmission from '../AssignmentSubmission/page';
+import StudyGroups from '../Study-Groups/page';
 import { BookOpen, Sparkles, CheckCircle, Clock, XCircle, Search, GraduationCap, AlertCircle, FileText, LayoutDashboard, Users } from 'lucide-react';
 
 interface EnrollmentResponse {

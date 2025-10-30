@@ -1,5 +1,7 @@
+'use client';
+
 import { useState, useEffect } from 'react';
-import api from '../../lib/api';
+import api from '../../../lib/api';
 import type { AxiosError } from 'axios';
 import { Users, Clock, Video, MessageSquare, Plus, Calendar, CheckCircle, XCircle, AlertCircle, Search, Filter } from 'lucide-react';
 

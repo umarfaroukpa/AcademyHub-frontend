@@ -1,7 +1,9 @@
+'use client';
+
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { setAuthToken, clearAuth } from '../../lib/api';
-import api from '../../lib/api';
+import { setAuthToken, clearAuth } from '../../../lib/api';
+import api from '../../../lib/api';
 import { AxiosError } from 'axios';
 import { Shield, Users, BookOpen, CheckCircle, XCircle, Clock, AlertCircle, GraduationCap, Settings, BarChart3, Filter, Search, Trash2, UserPlus, BookPlus } from 'lucide-react';
 

@@ -1,5 +1,7 @@
+'use client';
+
 import { useState, useEffect } from 'react';
-import api from '../../lib/api';
+import api from '../../../lib/api';
 import { Plus, Edit, Trash2, FileText, Calendar, Users } from 'lucide-react';
 import { AxiosError } from 'axios';
 

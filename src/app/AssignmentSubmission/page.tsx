@@ -1,5 +1,7 @@
+'use client';
+
 import { useState, useEffect } from 'react';
-import api from '../../lib/api';
+import api from '../../../lib/api';
 import { Upload, FileText, Calendar, CheckCircle, Clock, AlertCircle } from 'lucide-react';
 import { AxiosError } from 'axios';
 

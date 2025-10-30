@@ -74,12 +74,13 @@ class ApiErrorBoundary extends Component<Props, State> {
   };
 
   handleRelogin = () => {
-    // Clear auth data
+  // Only run in browser
+  if (typeof window !== 'undefined') {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     window.location.href = '/login';
-  };
-
+  }
+};
   render() {
     if (this.state.hasError) {
       // Network Error UI

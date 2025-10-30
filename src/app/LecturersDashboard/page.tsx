@@ -1,8 +1,10 @@
+'use client';
+
 import { useState, useEffect } from 'react';
-import api from '../../lib/api';
+import api from '../../../lib/api';
 import axios from 'axios';
-import AssignmentManagement from '../components/AssignmentManagement';
-import SubmissionGrading from '../components/SubmissionGrading';
+import AssignmentManagement from '../AssignmentManagement/page';
+import SubmissionGrading from '../SubmissionGrading/page';
 import { BookOpen, Plus, Upload, Sparkles, FileText, Download, LayoutDashboard, Users, CheckCircle } from 'lucide-react';
 
 interface Course {

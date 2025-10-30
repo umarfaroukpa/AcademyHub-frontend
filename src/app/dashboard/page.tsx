@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import StudentDashboard from '../../components/StudentsDashboard';
-import LecturerDashboard from '../../components/LecturersDashboard';
-import AdminDashboard from '../../components/AdminDashboard';
+import StudentDashboard from '../StudentsDashboard/page';
+import LecturerDashboard from '../LecturersDashboard/page';
+import AdminDashboard from '../AdminDashboard/page';
 
 interface User {
   id: number;

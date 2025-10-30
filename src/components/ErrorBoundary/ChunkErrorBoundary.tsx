@@ -34,25 +34,28 @@ class ChunkErrorBoundary extends Component<Props, State> {
     };
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('ChunkErrorBoundary caught an error:', error, errorInfo);
+ componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  console.error('ChunkErrorBoundary caught an error:', error, errorInfo);
 
-    // Auto-reload once for chunk errors
-    if (this.state.isChunkError) {
-      const reloadCount = sessionStorage.getItem('chunkErrorReloadCount') || '0';
-      const count = parseInt(reloadCount);
+  // Only run in browser
+  if (typeof window !== 'undefined' && this.state.isChunkError) {
+    const reloadCount = sessionStorage.getItem('chunkErrorReloadCount') || '0';
+    const count = parseInt(reloadCount);
 
-      if (count < 1) {
-        sessionStorage.setItem('chunkErrorReloadCount', (count + 1).toString());
-        setTimeout(() => window.location.reload(), 1000);
-      }
+    if (count < 1) {
+      sessionStorage.setItem('chunkErrorReloadCount', (count + 1).toString());
+      setTimeout(() => window.location.reload(), 1000);
     }
   }
+}
 
-  handleReload = () => {
+handleReload = () => {
+  // Only run in browser
+  if (typeof window !== 'undefined') {
     sessionStorage.removeItem('chunkErrorReloadCount');
     window.location.reload();
-  };
+  }
+};
 
   render() {
     if (this.state.hasError && this.state.isChunkError) {

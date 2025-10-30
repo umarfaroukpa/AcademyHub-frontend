@@ -1,13 +1,20 @@
 'use client';
 
 import { GoogleOAuthProvider } from '@react-oauth/google';
-import { AppErrorBoundary } from '../components/ErrorBoundary';
 import LayoutWrapper from "../components/LayoutWrapper";
+import dynamic from 'next/dynamic';
+import { ReactNode } from 'react';
+
+// import error boundary with no SSR
+const AppErrorBoundary = dynamic(
+  () => import('../components/ErrorBoundary/AppErrorBoundary'),
+  { ssr: false }
+);
 
 export default function ClientLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   const isDevelopment = process.env.NODE_ENV === 'development';
   

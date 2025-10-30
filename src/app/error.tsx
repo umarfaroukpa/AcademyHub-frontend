@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect } from 'react';
-import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
 import Link from 'next/link';
+import { AlertCircle, RefreshCw, Home } from 'lucide-react';
 
 export default function Error({
   error,
@@ -12,49 +12,51 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    // Log the error to an error reporting service
-    console.error('Next.js Error:', error);
+    console.error('Error boundary caught:', error);
   }, [error]);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="max-w-2xl w-full bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
-        <div className="bg-gradient-to-r from-red-500 to-pink-600 p-6 text-white">
-          <div className="flex items-center gap-4">
-            <div className="bg-white/20 p-3 rounded-full">
-              <AlertTriangle className="w-8 h-8" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold">Something went wrong!</h1>
-              <p className="text-red-100 mt-1">An unexpected error occurred</p>
-            </div>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 to-orange-50">
+      <div className="text-center p-8 max-w-md">
+        <div className="mb-6 flex justify-center">
+          <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center">
+            <AlertCircle className="w-10 h-10 text-red-600" />
           </div>
         </div>
+        
+        <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          Something Went Wrong
+        </h2>
+        
+        <p className="text-gray-600 mb-8">
+          We encountered an unexpected error. Please try again.
+        </p>
 
-        <div className="p-6">
-          <div className="mb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-2">Error Details</h2>
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-              <p className="text-red-800 font-mono text-sm">{error.message}</p>
-            </div>
+        {process.env.NODE_ENV === 'development' && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-left">
+            <p className="text-sm text-red-800 font-mono break-all">
+              {error.message}
+            </p>
           </div>
-
-          <div className="flex gap-3">
-            <button
-              onClick={reset}
-              className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
-            >
-              <RefreshCw className="w-4 h-4" />
-              Try Again
-            </button>
-            <Link
-              href="/"
-              className="flex items-center gap-2 px-6 py-3 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
-            >
-              <Home className="w-4 h-4" />
-              Go Home
-            </Link>
-          </div>
+        )}
+        
+        <div className="flex gap-4 justify-center">
+          <button
+            onClick={reset}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-red-600 to-orange-600 text-white rounded-xl hover:shadow-lg transition-all font-semibold"
+          >
+            <RefreshCw className="w-5 h-5" />
+            Try Again
+          </button>
+          
+          
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors font-semibold"
+          >
+            <Home className="w-5 h-5" />
+            Go Home
+          </Link>
         </div>
       </div>
     </div>

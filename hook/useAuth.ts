@@ -25,8 +25,10 @@ export function useAuth() {
 
     try {
       setUser(JSON.parse(userData));
-    } catch (error) {
+    } catch (error: unknown) { 
+      //optionally check if 'error' is an Error object before accessing its properties
       console.error('Error parsing user data, logging out:', error);
+      
       // Clear storage if data is corrupted
       localStorage.removeItem('user');
       localStorage.removeItem('token');
@@ -34,8 +36,7 @@ export function useAuth() {
     } finally {
       setIsLoading(false);
     }
-    // Added setUser and setIsLoading to the dependency array for completeness,
-    
+    // Dependency array is already correct:
   }, [router, setUser, setIsLoading]); 
 
   const logout = () => {
