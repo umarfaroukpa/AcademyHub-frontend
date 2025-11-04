@@ -1,30 +1,47 @@
 'use client';
 
-import { GoogleOAuthProvider } from '@react-oauth/google';
-import LayoutWrapper from "../components/LayoutWrapper";
-import dynamic from 'next/dynamic';
-import { ReactNode } from 'react';
+import { usePathname } from 'next/navigation';
+import { GoogleOAuthProvider } from '@react-oauth/google'; 
+import Header from '../components/Header'; 
+import Footer from '../components/Footer';
 
-// import error boundary with no SSR
-const AppErrorBoundary = dynamic(
-  () => import('../components/ErrorBoundary/AppErrorBoundary'),
-  { ssr: false }
-);
+export default function ClientLayout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
 
-export default function ClientLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
-  const isDevelopment = process.env.NODE_ENV === 'development';
-  
+  const isAuthPage = pathname === '/login' || pathname === '/signup';
+  const isLandingPage = pathname === '/';
+
+  const isErrorPage = 
+      pathname?.includes('/404') || 
+      pathname?.includes('/500') || 
+      pathname?.includes('/error') || 
+      pathname?.includes('/not-found');
+
+  if (isErrorPage) {
+    return (
+      <main className="min-h-screen relative" style={{ zIndex: 1, isolation: 'isolate' }}>
+        {children}
+      </main>
+    );
+  }
+ 
   return (
-    <AppErrorBoundary showDetails={isDevelopment}>
-      <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ''}>
-        <LayoutWrapper>
+    <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ''}>
+      <div className="relative min-h-screen">
+        <div className="relative" style={{ zIndex: 50 }}>
+           <Header />
+        </div>
+        <main 
+          className="min-h-screen relative" 
+          style={{ 
+            zIndex: 1,
+            backgroundColor: !isAuthPage && !isLandingPage ? '#f9fafb' : 'transparent',
+            isolation: 'isolate'
+          }}>
           {children}
-        </LayoutWrapper>
-      </GoogleOAuthProvider>
-    </AppErrorBoundary>
+        </main>
+        {!isAuthPage && (<div className="relative" style={{ zIndex: 1 }}><Footer /></div>)}
+      </div>
+    </GoogleOAuthProvider>
   );
 }

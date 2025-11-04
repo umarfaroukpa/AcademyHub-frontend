@@ -1,4 +1,5 @@
 'use client';
+
 import { useState } from 'react';
 import { GoogleLogin } from '@react-oauth/google';
 import { GraduationCap, Users, AlertCircle } from 'lucide-react';

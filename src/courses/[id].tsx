@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useEffect, useCallback } from 'react';
 import Router, { useRouter } from 'next/router';
 import API, { setAuthToken } from '../../lib/api';

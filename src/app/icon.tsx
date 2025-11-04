@@ -1,13 +1,16 @@
 import { ImageResponse } from 'next/og'
- 
+
+// Export runtime
+export const runtime = 'edge'
+
 export const size = {
   width: 32,
   height: 32,
 }
- 
+
 export const contentType = 'image/png'
- 
-export default async function Icon() {
+
+export default function Icon() {
   return new ImageResponse(
     (
       <div
@@ -24,8 +27,8 @@ export default async function Icon() {
         }}
       >
         <svg
-          width="24"
-          height="24"
+          width="20"
+          height="20"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"

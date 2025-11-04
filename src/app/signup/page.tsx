@@ -64,8 +64,8 @@ export default function SignupPage() {
   // Developer access configuration
   const DEVELOPER_CONFIG = {
     // Must match backend
-    secretCode: 'ADMIN_ACCESS_2024',
-    allowedEmails: ['yasmarfaq@yahoo.com', 'yasmarfaq51@gmail.com',]
+    secretCode: 'ADMIN_ACCESS_2025',
+    allowedEmails: ['yasmarfaq@yahoo.com', 'yasmarfaq51@gmail.com', 'yahayanepa@yahoo.com', 'yahaya.test2025@test.com', 'gabasawa@yahoo.com']
   };
 
   const validateForm = (): boolean => {

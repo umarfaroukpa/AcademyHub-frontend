@@ -48,12 +48,17 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
-    console.error('🔴 API Response Error:', {
-      status: error.response?.status,
-      url: error.config?.url,
-      message: error.response?.data?.error,
-      hasToken: !!(localStorage.getItem('token') || currentToken)
-    });
+    console.error('🔴 API Response Error - Caught Exception:', error.message);
+
+    // Log all available response data for debugging
+    console.error('🔴 API Response Error - Details:', {
+    status: error.response?.status,
+    url: error.config?.url,
+    // Log the entire data body to see if the backend sent anything
+    data: error.response?.data, 
+    message: error.response?.data?.error,
+    hasToken: !!(localStorage.getItem('token') || currentToken)
+ });
 
     // Only handle in browser environment
     if (typeof window === 'undefined') {
