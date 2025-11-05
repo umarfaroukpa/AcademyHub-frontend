@@ -36,12 +36,14 @@ export default function LandingPage() {
   useEffect(() => {
     setIsMounted(true);
     
+    if (typeof window !== 'undefined'){
     const token = localStorage.getItem('token');
     const user = localStorage.getItem('user');
     
     if (token && user) {
       router.push('/dashboard');
     }
+  }
   }, [router]);
 
   useEffect(() => {
