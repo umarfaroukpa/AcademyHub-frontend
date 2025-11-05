@@ -11,21 +11,21 @@
     "cypress:run": "cypress run",
     "cypress:headless": "cypress run --headless",
     "test:e2e": "start-server-and-test dev http://localhost:3000 cypress:open",
-    "test:e2e:ci": "start-server-and-test dev http://localhost:3000 cypress:run",
-    "vercel-build": "npm install --legacy-peer-deps && next build"
+    "test:e2e:ci": "start-server-and-test dev http://localhost:3000 cypress:run"
   },
   "dependencies": {
     "@react-oauth/google": "^0.12.2",
+    "@tailwindcss/postcss": "^4",
     "axios": "^1.13.1",
     "lucide-react": "^0.544.0",
     "next": "15.5.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "swr": "^2.3.6"
+    "swr": "^2.3.6",
+    "tailwindcss": "^4"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4",
     "@testing-library/cypress": "^10.1.0",
     "@types/node": "^20",
     "@types/react": "^19",
@@ -34,7 +34,6 @@
     "eslint": "^9",
     "eslint-config-next": "15.5.3",
     "start-server-and-test": "^2.1.2",
-    "tailwindcss": "^4",
     "typescript": "^5.9.3"
   }
 }
